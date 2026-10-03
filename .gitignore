@@ -1,0 +1,44 @@
+# IDE
+.idea/
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+.env.*
+
+# Build
+bin/
+build/
+dist/
+tmp/
+
+# Logs
+*.log
+
+# Go
+*.exe
+*.test
+*.out
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Datasets and large files
+data/
+*.csv
+*.parquet
+*.h5
+*.hdf5
+*.zip
+*.tar
+*.gz
+
+# Experimental results
+results/
