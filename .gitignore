@@ -31,7 +31,10 @@ __pycache__/
 venv/
 
 # Datasets and large files
-data/
+data/raw/*
+data/prepared/*
+!data/raw/.gitkeep
+!data/prepared/.gitkeep
 *.csv
 *.parquet
 *.h5
@@ -42,3 +45,28 @@ data/
 
 # Experimental results
 results/
+
+# Local toolchains, PostgreSQL and dataset scratch space
+.tools/
+.cache/
+.docker/
+.dataset-*/
+*.tmp.*
+configs/feature-mapping.local.json
+!.env.example
+
+# Disposable test, download and SQLite artifacts
+.pytest_cache/
+*.sqlite
+*.sqlite3
+*.sqlite-journal
+*.sqlite-wal
+*.sqlite-shm
+*.part
+*.tmp
+
+# Local session notes and reports (retain on disk)
+/docs/data-access.md
+/docs/implementation-report.md
+/docs/summit-D1-report.md
+/docs/work-data-search-prompt.md
