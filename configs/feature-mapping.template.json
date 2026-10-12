@@ -1,0 +1,24 @@
+{
+  "timestamp": "SET_TIMESTAMP_COLUMN_FROM_REAL_SCHEMA",
+  "hostname": "SET_HOSTNAME_COLUMN_FROM_REAL_SCHEMA",
+  "features": {
+    "psu0_power": "SET_PSU0_POWER_COLUMN",
+    "psu1_power": "SET_PSU1_POWER_COLUMN",
+    "cpu0_power": "SET_CPU0_POWER_COLUMN",
+    "cpu1_power": "SET_CPU1_POWER_COLUMN",
+    "gpu0_power": "SET_GPU0_POWER_COLUMN",
+    "gpu1_power": "SET_GPU1_POWER_COLUMN",
+    "gpu2_power": "SET_GPU2_POWER_COLUMN",
+    "gpu3_power": "SET_GPU3_POWER_COLUMN",
+    "gpu4_power": "SET_GPU4_POWER_COLUMN",
+    "gpu5_power": "SET_GPU5_POWER_COLUMN",
+    "cpu0_mean_temp": ["SET_ALL_CPU0_CORE_COLUMNS_FROM_REAL_SCHEMA"],
+    "cpu1_mean_temp": ["SET_ALL_CPU1_CORE_COLUMNS_FROM_REAL_SCHEMA"],
+    "gpu0_core_temp": "SET_GPU0_CORE_TEMP_COLUMN",
+    "gpu1_core_temp": "SET_GPU1_CORE_TEMP_COLUMN",
+    "gpu2_core_temp": "SET_GPU2_CORE_TEMP_COLUMN",
+    "gpu3_core_temp": "SET_GPU3_CORE_TEMP_COLUMN",
+    "gpu4_core_temp": "SET_GPU4_CORE_TEMP_COLUMN",
+    "gpu5_core_temp": "SET_GPU5_CORE_TEMP_COLUMN"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "timestamp": "timestamp",
+  "hostname": "hostname",
+  "features": {
+    "psu0_power": "ps0_input_power",
+    "cpu0_power": "p0_power",
+    "cpu0_mean_temp": "p0_temp_mean",
+    "psu1_power": "ps1_input_power",
+    "cpu1_power": "p1_power",
+    "cpu1_mean_temp": "p1_temp_mean",
+    "gpu0_power": "p0_gpu0_power",
+    "gpu0_core_temp": "gpu0_core_temp",
+    "gpu1_power": "p0_gpu1_power",
+    "gpu1_core_temp": "gpu1_core_temp",
+    "gpu2_power": "p0_gpu2_power",
+    "gpu2_core_temp": "gpu2_core_temp",
+    "gpu3_power": "p1_gpu0_power",
+    "gpu3_core_temp": "gpu3_core_temp",
+    "gpu4_power": "p1_gpu1_power",
+    "gpu4_core_temp": "gpu4_core_temp",
+    "gpu5_power": "p1_gpu2_power",
+    "gpu5_core_temp": "gpu5_core_temp"
+  }
+}
