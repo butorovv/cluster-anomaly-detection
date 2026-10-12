@@ -199,7 +199,13 @@ func FitStatistical(ctx context.Context, data Data, window Window, cfg Statistic
 	}
 	var err error
 	p.Threshold, err = EmpiricalQuantile(distances, 0.99)
-	return p, err
+	if err != nil {
+		return nil, err
+	}
+	if err = p.Validate(); err != nil {
+		return nil, err
+	}
+	return p, nil
 }
 
 func ones(n int) []float64 {
@@ -231,6 +237,9 @@ func (p *StatisticalProfile) DistanceSquared(v Vector) (float64, error) {
 	}
 	for j := range z {
 		z[j] -= p.Mean[j]
+		if !Finite(z[j]) {
+			return 0, fmt.Errorf("nonfinite centered coordinate %d", j)
+		}
 	}
 	d := 0.0
 	magnitude := 0.0
@@ -240,6 +249,9 @@ func (p *StatisticalProfile) DistanceSquared(v Vector) (float64, error) {
 			d += term
 			magnitude += math.Abs(term)
 		}
+	}
+	if !Finite(d) || !Finite(magnitude) {
+		return 0, fmt.Errorf("squared Mahalanobis overflow")
 	}
 	// Only suppress floating-point roundoff of the positive-semidefinite form.
 	if d < 0 && -d <= 1e-12*math.Max(1, magnitude) {
@@ -252,12 +264,18 @@ func (p *StatisticalProfile) DistanceSquared(v Vector) (float64, error) {
 }
 
 func (p *StatisticalProfile) ControlLabel(v Vector) (float64, bool, error) {
+	if !Finite(p.Threshold) || p.Threshold < 0 {
+		return 0, false, fmt.Errorf("invalid Mahalanobis threshold")
+	}
 	d, err := p.DistanceSquared(v)
-	return d, d > p.Threshold, err
+	return d, err == nil && d > p.Threshold, err
 }
 
 // Validate checks persisted numerical conventions and parameters before reuse.
 func (p *StatisticalProfile) Validate() error {
+	if p == nil {
+		return fmt.Errorf("missing statistical profile")
+	}
 	if p.Version != "statistical-v1" || p.TrainingWindow != NIRWindows()[0] || p.Observations <= p.Config.CovarianceDDOF || p.Rank < 0 || p.Rank > Dimensions || !Finite(p.Threshold) || p.Threshold < 0 || !Finite(p.Config.SVDRCond) || p.Config.SVDRCond <= 0 || p.Config.SVDRCond >= 1 || (p.Config.CovarianceDDOF != 0 && p.Config.CovarianceDDOF != 1) {
 		return fmt.Errorf("invalid statistical profile metadata")
 	}
@@ -270,6 +288,53 @@ func (p *StatisticalProfile) Validate() error {
 				return fmt.Errorf("invalid profile matrix")
 			}
 		}
+	}
+	// Finite JSON numbers alone do not establish a valid covariance model.
+	// Recompute its small SVD using the persisted cutoff before accepting a load.
+	cov := mat.NewSymDense(Dimensions, nil)
+	for i := 0; i < Dimensions; i++ {
+		for j := 0; j <= i; j++ {
+			cov.SetSym(i, j, p.Covariance[i][j])
+		}
+	}
+	var eigen mat.EigenSym
+	if !eigen.Factorize(cov, false) {
+		return fmt.Errorf("covariance eigenvalue check failed")
+	}
+	values := eigen.Values(nil)
+	for _, value := range values {
+		if !Finite(value) {
+			return fmt.Errorf("nonfinite covariance eigenvalue")
+		}
+	}
+	spectralScale := math.Max(math.Abs(values[0]), math.Abs(values[Dimensions-1]))
+	if values[0] < -1e-12*spectralScale {
+		return fmt.Errorf("covariance is not positive semidefinite")
+	}
+	var svd mat.SVD
+	if !svd.Factorize(cov, mat.SVDFull) || svd.Rank(p.Config.SVDRCond) != p.Rank {
+		return fmt.Errorf("covariance rank disagrees with profile")
+	}
+	var expected mat.Dense
+	if p.Rank > 0 {
+		svd.SolveTo(&expected, mat.NewDiagDense(Dimensions, ones(Dimensions)), p.Rank)
+	}
+	var difference, norm float64
+	for i := 0; i < Dimensions; i++ {
+		for j := 0; j < Dimensions; j++ {
+			want := 0.0
+			if p.Rank > 0 {
+				want = expected.At(i, j)
+			}
+			if !Finite(want) {
+				return fmt.Errorf("nonfinite covariance pseudoinverse")
+			}
+			norm = math.Hypot(norm, want)
+			difference = math.Hypot(difference, p.PseudoInverse[i][j]-want)
+		}
+	}
+	if !Finite(norm) || !Finite(difference) || difference > 1e-10*norm {
+		return fmt.Errorf("pseudoinverse disagrees with covariance and cutoff")
 	}
 	return nil
 }

@@ -185,6 +185,66 @@ func TestStatisticalSerializationAndStrictThreshold(t *testing.T) {
 	}
 }
 
+func TestRejectCorruptFiniteProfileAndNumericalOverflow(t *testing.T) {
+	p := fit(t, []Vector{{-1}, {1}})
+	for name, corrupt := range map[string]func(*StatisticalProfile){
+		"rank":                  func(p *StatisticalProfile) { p.Rank = 0 },
+		"inverse":               func(p *StatisticalProfile) { p.PseudoInverse[0][0] *= 2 },
+		"indefinite covariance": func(p *StatisticalProfile) { p.Covariance[0][0] *= -1 },
+		"nonfinite mean":        func(p *StatisticalProfile) { p.Mean[0] = math.Inf(1) },
+	} {
+		t.Run(name, func(t *testing.T) {
+			bad := *p
+			corrupt(&bad)
+			if err := bad.Validate(); err == nil {
+				t.Fatal("corrupt profile accepted")
+			}
+		})
+	}
+	constant := fit(t, []Vector{{}, {}})
+	constant.PseudoInverse[0][0] = 1e-100
+	if err := constant.Validate(); err == nil {
+		t.Fatal("rank-zero profile accepted a nonzero inverse")
+	}
+	// Previously -Inf <= 1e-12*Inf clamped negative overflow to zero.
+	bad := *p
+	bad.PseudoInverse[0][0] = -math.MaxFloat64
+	if _, err := bad.DistanceSquared(Vector{3}); err == nil {
+		t.Fatal("negative overflow was accepted as zero distance")
+	}
+	for _, threshold := range []float64{math.NaN(), math.Inf(1), -1} {
+		bad = *p
+		bad.Threshold = threshold
+		if _, label, err := bad.ControlLabel(Vector{3}); err == nil || label {
+			t.Fatal("invalid threshold produced a control label")
+		}
+	}
+	if _, err := FitStatistical(context.Background(), vectors([]Vector{{-math.MaxFloat64}, {math.MaxFloat64}}), NIRWindows()[0], StatisticalConfig{1e-12, 1}); err == nil {
+		t.Fatal("overflowing scale was accepted as trained")
+	}
+}
+
+func TestNearDependentCovarianceCutoff(t *testing.T) {
+	// Check the cutoff after robust scaling, including a floored small MAD.
+	vs := []Vector{{1, 1e-7}, {1, -1e-7}, {-1, 1e-7}, {-1, -1e-7}}
+	p := fit(t, vs)
+	// Robust scaling floors the second coordinate at 1e-4; normalized
+	// variance ratio is about 2.2e-6, so both dimensions remain resolved.
+	if p.Rank != 2 {
+		t.Fatal("resolved small variance lost", p.Rank)
+	}
+	for i := range vs {
+		vs[i][1] *= 1e-7
+	}
+	p = fit(t, vs)
+	if p.Rank != 1 {
+		t.Fatal("below-cutoff variance retained", p.Rank)
+	}
+	if err := p.Validate(); err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestTrainingRejectsActualD2D3ObservationsOnEveryPass(t *testing.T) {
 	windows := NIRWindows()
 	for _, w := range windows[1:] {
