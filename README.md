@@ -79,8 +79,8 @@ go test -v ./internal/experiment -run TestRealPreparedDayWindows -count=1
 Для каждого из D1/D2/D3 подтверждены 829 440 состояний, 2 880 timestamp и
 46 080 TimestampComplete без пересечений. Невыставленная переменная означает
 SKIP, а явно выбранный недоступный файл — FAIL. Проверка шести снимков остаётся
-отдельной от полного обучения D1. Этапы B/C реализованы; подбор порога IF и
-итоговые испытания относятся к следующим мини-ТЗ.
+отдельной от полного обучения D1. Этапы B/C и калибровка IF на D2 реализованы;
+итоговые испытания и топологическая агрегация относятся к следующим мини-ТЗ.
 
 ## Isolation Forest — мини-ТЗ №3
 
@@ -89,8 +89,8 @@ SKIP, а явно выбранный недоступный файл — FAIL. �
 используются без переобучения. Независимые reservoir-выборки для каждого дерева
 получаются за один потоковый проход D1; физические остатки в IF не входят.
 По умолчанию `trees=100`, `sample-size=256`, `max-depth=8`, `seed=42`.
-Чем выше score, тем аномальнее состояние. Порог и бинарная классификация
-не реализованы; D2/D3 этот эксперимент не использует.
+Чем выше score, тем аномальнее состояние. В мини-ТЗ №3 рассчитывается только
+score; калибровка порога на D2 описана ниже. D2/D3 обучение леса не использует.
 
 ```powershell
 go run ./cmd/isolation --statistical-profile results/statistical-20220118-8h-v1.json --trees 100 --sample-size 256 --max-depth 8 --seed 42 --output results/isolation-new-run.json
@@ -104,6 +104,29 @@ go run ./cmd/isolation --statistical-profile results/statistical-20220118-8h-v1.
 исключённый из Git `results/`, существующие файлы не перезаписываются.
 Реальные **829 440 состояния D1**, повторное обучение, reload и независимая
 NumPy/PyArrow-проверка описаны в [отчёте IF](docs/real-d1-isolation-forest.md).
+
+## Калибровка IF на D2 — мини-ТЗ №4
+
+`cmd/calibration` загружает сохранённые модели D1 и обрабатывает только D2
+`[08:00,16:00)` UTC. Порог выбирается среди различных наблюдаемых score по
+максимальному F1 согласования с контрольными метками Mahalanobis. Бинаризация
+строго `score > theta_IF`; при равном F1 выбирается наибольший порог.
+Сортировка и проход блоками равных score дают `O(n log n)`; сравнение F1
+выполняется точно по целочисленным счётчикам. Неопределённые метрики
+сохраняются как JSON null. Ни одна модель D1 не переобучается.
+
+```powershell
+go run ./cmd/calibration --isolation-profile results/isolation-20220118-v1.json --statistical-profile results/statistical-20220118-8h-v1.json --output results/calibration-new.json
+go run ./cmd/calibration --isolation-profile results/isolation-20220118-v1.json --statistical-profile results/statistical-20220118-8h-v1.json --calibration results/calibration-new.json --output results/calibration-new-reloaded.json
+```
+
+Результат содержит порог, confusion matrix, Precision/Recall/F1, число
+IF-срабатываний, audit D2 и SHA-256 датасета/исходных моделей. `--calibration`
+применяет сохранённый порог без поиска и проверяет совпадение результатов D2.
+Реальный порог **0.6850838848387528**, F1ref **0.2294187530250363**;
+это согласование статистических псевдометок, не диагностика аппаратных отказов.
+Данные и результаты остаются в исключённых каталогах, D3 не используется.
+[Технический отчёт и независимая проверка](docs/real-d2-isolation-calibration.md).
 
 ## Архитектура
 
