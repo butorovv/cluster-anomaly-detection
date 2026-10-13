@@ -24,6 +24,23 @@ type StatisticalRun struct {
 	Windows [3]StatisticalEvaluation     `json:"windows"`
 }
 
+// LoadProfile reads the profile from the existing Stage A result envelope and
+// validates its numerical parameters before allowing inference.
+func LoadProfile(path string) (*analysis.StatisticalProfile, error) {
+	b, err := os.ReadFile(path)
+	if err != nil {
+		return nil, err
+	}
+	var run StatisticalRun
+	if err := json.Unmarshal(b, &run); err != nil {
+		return nil, err
+	}
+	if err := run.Profile.Validate(); err != nil {
+		return nil, fmt.Errorf("load statistical profile: %w", err)
+	}
+	return run.Profile, nil
+}
+
 func StageA(ctx context.Context, s *Source, cfg analysis.StatisticalConfig, progress func(string)) (*StatisticalRun, error) {
 	if progress != nil {
 		progress("A: fitting normalization, covariance, SVD and D1 q99")
