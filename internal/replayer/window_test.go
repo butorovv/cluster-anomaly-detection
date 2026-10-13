@@ -52,6 +52,31 @@ func TestWindowReaderHalfOpenOrderMissingAndCancellation(t *testing.T) {
 	}
 }
 
+func TestWindowReaderStopsAtExcludedEnd(t *testing.T) {
+	start := time.Date(2022, 1, 18, 0, 0, 0, 0, time.UTC)
+	var rows []domain.TelemetryRecord
+	for _, offset := range []time.Duration{0, 10 * time.Second, 20 * time.Second, 30 * time.Second} {
+		v := fixtureRecord(0, "a01n01")
+		v.Timestamp = start.Add(offset)
+		rows = append(rows, v)
+	}
+	source := &windowFixture{rows: rows}
+	r := WindowReader{Source: source, Start: start, End: start.Add(20 * time.Second)}
+	for i := 0; i < 2; i++ {
+		if _, err := r.Next(context.Background()); err != nil {
+			t.Fatal(err)
+		}
+	}
+	for i := 0; i < 2; i++ {
+		if _, err := r.Next(context.Background()); !errors.Is(err, io.EOF) {
+			t.Fatal(err)
+		}
+	}
+	if source.i != 3 {
+		t.Fatal("traversed held-out suffix", source.i)
+	}
+}
+
 func TestWindowReaderOnPreparedParquet(t *testing.T) {
 	row := parquetFixtureRow()
 	path := writeFixture(t, row, true)

@@ -252,6 +252,12 @@ Env: DATABASE_URL, REPLAYER_INPUT, REPLAYER_SPEED, LOG_LEVEL. Явные flags �
 
 ## Тесты
 
+Компонентная физическая модель обучается на D1 и применяется к D2 через
+`go run ./cmd/physical`. Восемь коэффициентов, остатки, MAE, наивный baseline,
+устойчивость и явно заданный J описаны в
+[отчёте реального расчёта](docs/real-component-physical-profile.md).
+`--profile` загружает физический профиль без повторного обучения.
+
 Быстрые unit checks:
 
 ```powershell
