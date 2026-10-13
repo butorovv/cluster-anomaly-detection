@@ -2,7 +2,8 @@
 
 Начальный этап КР «Программная система выявления групповых аномалий в вычислительных
 кластерах»: offline Summit → F18 D1/D2/D3 → PostgreSQL и Go Telemetry Replayer.
-Алгоритмы обнаружения, Worker, Master, Kafka, HTTP/GUI не реализуются в этом этапе.
+Offline-ядра Mahalanobis, компонентной физической модели и Isolation Forest
+реализованы ниже; Worker, Master, Kafka, HTTP/GUI пока не реализованы.
 
 **Текущий статус:** реальный Summit D1 (`20220118.parquet`, ClusterWise) скачан,
 SHA256 и PyArrow проверены. Подготовлены 2 488 320 F18 states для 16×18 узлов,
@@ -78,7 +79,31 @@ go test -v ./internal/experiment -run TestRealPreparedDayWindows -count=1
 Для каждого из D1/D2/D3 подтверждены 829 440 состояний, 2 880 timestamp и
 46 080 TimestampComplete без пересечений. Невыставленная переменная означает
 SKIP, а явно выбранный недоступный файл — FAIL. Проверка шести снимков остаётся
-отдельной от полного обучения D1. Этапы B/C/D пока не реализованы.
+отдельной от полного обучения D1. Этапы B/C реализованы; подбор порога IF и
+итоговые испытания относятся к следующим мини-ТЗ.
+
+## Isolation Forest — мини-ТЗ №3
+
+`internal/analysis/isolation.go` реализует один общий лес для 288 узлов по F18.
+Существующие median/MAD/scale из сохранённого статистического профиля D1
+используются без переобучения. Независимые reservoir-выборки для каждого дерева
+получаются за один потоковый проход D1; физические остатки в IF не входят.
+По умолчанию `trees=100`, `sample-size=256`, `max-depth=8`, `seed=42`.
+Чем выше score, тем аномальнее состояние. Порог и бинарная классификация
+не реализованы; D2/D3 этот эксперимент не использует.
+
+```powershell
+go run ./cmd/isolation --statistical-profile results/statistical-20220118-8h-v1.json --trees 100 --sample-size 256 --max-depth 8 --seed 42 --output results/isolation-new-run.json
+go run ./cmd/isolation --statistical-profile results/statistical-20220118-8h-v1.json --profile results/isolation-new-run.json --output results/isolation-new-reloaded.json
+```
+
+Первый запуск сохраняет лес, F18, окно обучения, SHA-256 датасета и исходного
+статистического профиля, audit D1, распределение score и метрики ресурсов.
+Загрузка проверяет эту связь и повторяет расчёт D1 без обучения; CLI требует
+точного совпадения статистик. Результаты сохраняются прежним `SaveNew` в
+исключённый из Git `results/`, существующие файлы не перезаписываются.
+Реальные **829 440 состояния D1**, повторное обучение, reload и независимая
+NumPy/PyArrow-проверка описаны в [отчёте IF](docs/real-d1-isolation-forest.md).
 
 ## Архитектура
 
