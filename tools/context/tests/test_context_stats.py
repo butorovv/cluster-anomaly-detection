@@ -12,7 +12,7 @@ from context_stats import (  # noqa: E402
     calibrate, increments, partition, physical, physical_thresholds,
     quantile, runs_summary, select_events, support, topk,
 )
-sys.path.insert(0, str(ROOT / "results" / "diagnostics-source" / "tools" / "diagnostics"))
+sys.path.insert(0, str(ROOT / "tools" / "diagnostics"))
 sys.path.insert(0, str(ROOT / "tools" / "context"))
 from context_stats import joint_events  # noqa: E402
 from analyze import aggregate_reactions, reaction  # noqa: E402

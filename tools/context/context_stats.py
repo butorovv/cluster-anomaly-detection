@@ -1,12 +1,12 @@
-"""Research-only context statistics. Reuse the read-only stage 4.1 snapshot."""
+"""Research-only context statistics. Reuse the tracked stage 4.1 modules."""
 import sys
 from pathlib import Path
 import numpy as np
 
 ROOT = Path(__file__).resolve().parents[2]
-DEPENDENCY = ROOT / 'results/diagnostics-source/tools/diagnostics'
+DEPENDENCY = ROOT / 'tools/diagnostics'
 if not (DEPENDENCY / 'diagnostic_stats.py').is_file():
-    raise RuntimeError('Extract research/d2-anomaly-diagnostics snapshot; see README')
+    raise RuntimeError('Tracked research 4.1 modules are required; see README')
 sys.path.insert(0, str(DEPENDENCY))
 from diagnostic_stats import linear_runs, empirical_tail, holm, coincidence_metrics
 
