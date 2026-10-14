@@ -4,24 +4,19 @@
 основные профили или алгоритм РПЗ. Входы — реальные подготовленные Summit F18.
 Протокол до расчётов: [context-experiment-protocol.md](../../docs/context-experiment-protocol.md).
 
-Зависимость №4.1 **не merged**: commit `79a1441` ветки
-`research/d2-anomaly-diagnostics`. Статистические функции используются из
-read-only снимка в игнорируемом `results/diagnostics-source`. Не cherry-pick/merge.
-Из корня репозитория, при наличии локальной ветки:
-
-```powershell
-New-Item -ItemType Directory -Force results/diagnostics-source | Out-Null
-git archive 79a1441 tools/diagnostics docs/d2-anomaly-diagnostics.md -o results/diagnostics-source/source.tar
-tar -xf results/diagnostics-source/source.tar -C results/diagnostics-source
-```
+В этапе 0 исследования №4.3 зависимость от ignored `results/diagnostics-source`
+устранена. Статистические функции и минимальные исходники для восстановления
+экспорта №4.1 закреплены в `tools/research43/vendor/research41`; это точная копия
+четырёх файлов коммита `79a1441`, без merge веток. Происхождение и SHA описаны
+в [README исследования №4.3](../research43/README.md).
 
 Нужны прежние неизменные файлы в `results/` и prepared Parquet/manifest.
-Если экспорт №4.1 отсутствует, его воспроизводят из снимка (новые файлы,
+Если экспорт №4.1 отсутствует, его воспроизводят из tracked исходников (новые файлы,
 не перезаписывать старые), затем запускают прежний анализ для shift_controls:
 
 ```powershell
-go run ./results/diagnostics-source/tools/diagnostics/export -output results/d2-diagnostics-v1
-python results/diagnostics-source/tools/diagnostics/analyze_d2.py --repeats 1999 --seed 42
+go run ./tools/research43/vendor/research41/export -output results/d2-diagnostics-v1
+python tools/research43/vendor/research41/analyze_d2.py --repeats 1999 --seed 42 --figures .cache/research41-figures
 ```
 
 NumPy 2.3.5, matplotlib 3.10.8, PyArrow 26.0.0, pytest 9.1.1 — существующее
