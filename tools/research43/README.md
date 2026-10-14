@@ -1,7 +1,8 @@
-# Исследование №4.3: только этапы 0/I
+# Исследование №4.3: этапы 0/I и утверждённый II
 
-Код экспериментальный. Не используется основной системой; кандидаты H1–H3
-не реализованы. [План](../../docs/research-4.3/STAGE-PLAN.md),
+Код экспериментальный, не используется основной системой. Этапы 0/I
+сохранены; H1/H2 реализованы после разрешения пользователя, H3 не реализована.
+[План](../../docs/research-4.3/STAGE-PLAN.md),
 [протокол до расчёта](../../docs/research-4.3/01-analysis-protocol.md).
 
 ## Входы и восстановление из чистого checkout
@@ -80,3 +81,41 @@ Git ancestry веток не объединена. Исторические от
 `audit.json`: независимые временные счётчики. Всё это в ignored results.
 В Git — исходники, тесты, протокол, Markdown и PNG. Каждый PNG создаётся
 из реальной телеметрии. Результаты I не являются независимой оценкой отказов.
+
+## Этап II: единственный утверждённый H2
+
+Формулы: [02-hypotheses-protocol](../../docs/research-4.3/02-hypotheses-protocol.md).
+Уточнения оценки до расчёта: [02-evaluation-protocol](../../docs/research-4.3/02-evaluation-protocol.md).
+Нужны те же реальные экспорты и итоговый `research43-v4` с 6050/928 парой/без пары.
+Параметры H2 не подбирались; H1 сохраняет исходный A0 и B1 без OR/переобучения.
+Имена выходных каталогов должны быть новыми; старые results не перезаписывать.
+
+```powershell
+$env:OPENBLAS_NUM_THREADS='1'
+python tools/research43/compare.py --output results/research43-stage2-replay
+python tools/research43/audit_compare.py --output results/research43-stage2-replay
+go run ./tools/research43/forest_benchmark -output results/research43-stage2-replay/forest-benchmark.json
+python tools/research43/write_comparison.py --output results/research43-stage2-replay
+python -m pytest -q -p no:cacheprovider tools/context/tests tools/research43/tests
+go test ./...
+go build ./...
+go vet ./...
+```
+
+`write_comparison.py` также читает `platform.json` (CPU/RAM) для отчёта; если
+файла нет, автоматически собирает read-only данные своей машины через
+registry/WinAPI или platform/sysconf. Неизвестные значения не подменяются
+значениями другой машины. Численные расчёты и audit от этого файла не зависят.
+
+Окончательный эксперимент: `results/research43-stage2-v1`. Profile H1/H2 JSON,
+channels/masks/event-metrics NPZ, summary/audit/topology-controls и benchmark
+остаются ignored. В Git только код, проверки, протокол, таблицы и реальные графики.
+Forest benchmark читает только D2.bin, не переобучает леса и проверяет каждый
+score A0/B2 против прежнего экспорта в прогреве и пяти повторах.
+
+Поправки по missing/cadence проверяются только маленькими тестовыми fixtures;
+полноценной эмпирической проверки на реальных пропусках здесь нет. D3/III/H3,
+окончательный GroupEvent и production-интеграция не выполнялись.
+Новая копия statistical helpers не добавлялась: используется одна ранее
+закреплённая dependency из №4.1. При согласованной будущей интеграции 4.1→4.2→4.3
+её следует заменить единым tracked модулем с сохранением численного поведения.
