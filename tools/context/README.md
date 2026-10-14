@@ -27,6 +27,7 @@ python tools/context/baseline.py
 go run ./tools/context/export -output-dir results/context-v1
 python tools/context/analyze.py
 python tools/context/audit.py
+python tools/context/check_reproduction.py --export results/context-v1
 python tools/context/benchmark.py
 python tools/context/write_report.py
 python -m pytest -q -p no:cacheprovider tools/context/tests
@@ -39,6 +40,9 @@ Exporter эксклюзивно создаёт экспериментальны�
 нового `-output-dir`. Анализ/аудит принимают фиксированный каталог результатов
 исследования; не запускайте их на другом эксперименте без изменения путей/проверок.
 `write_report.py` читает только `results/context-v1` и обновляет производный отчёт.
+`check_reproduction.py` только читает существующие D1/D2-экспорты и сохранённые
+результаты: сверяет пороги, события, числа сигналов, серии и групповые/хостовые
+счётчики; проверяет SHA256 входов до/после. Ничего не записывает и не обучает.
 Для повторения полного конкретного эксперимента удалять исходные результаты
 не требуется: используйте отдельную копию рабочего каталога с теми же входами.
 
