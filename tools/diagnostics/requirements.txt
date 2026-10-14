@@ -1,0 +1,5 @@
+# Optional offline research environment; not Go runtime dependencies.
+numpy==2.3.5
+pyarrow==26.0.0
+matplotlib==3.10.8
+pytest==9.1.1
