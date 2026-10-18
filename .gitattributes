@@ -1,2 +1,7 @@
 # Research manifests hash these historical Markdown protocol bytes.
 docs/research-4.3/*.md text eol=lf
+# These immutable JSON bytes are bound by the research group profile.
+configs/group-detection.summit-v1.json text eol=lf
+configs/group-profile.summit-v1.json text eol=lf
+configs/summit-hardware-reference.json text eol=lf
+configs/local-b1.summit-20220118.json text eol=lf
