@@ -1,0 +1,46 @@
+{
+  "platform": "Windows-11-10.0.26200-SP0",
+  "processor": "Intel64 Family 6 Model 154 Stepping 3, GenuineIntel",
+  "binary_sha256": "72a636e3dbe50669e550ffde6cc1c0b2fa6f5ce4bad37641f3f332b4fcf0b915",
+  "mode": "full materialized output; one run; warm OS cache; no cache eviction",
+  "repeats": 1,
+  "rows": [
+    {
+      "groups": 16,
+      "repeat": 1,
+      "wall_seconds": 9.803269800000635,
+      "exit_code": 0,
+      "peak_working_set_bytes": 48427008,
+      "analysis_seconds": 9.5485089,
+      "timing": {
+        "features_seconds": 0.3296425000000001,
+        "r_seconds": 0.07749269999999998,
+        "b_seconds": 0.008471600000000001,
+        "y_seconds": 0.0366892,
+        "if_seconds": 4.880369300000013,
+        "temporal_seconds": 0.027693700000000005
+      },
+      "sampled_peak_heap_bytes": 28389712,
+      "host_states_per_second": 86865.9189289754,
+      "event_counts": {
+        "0": 285,
+        "10": 292,
+        "30": 295,
+        "60": 287
+      },
+      "run_id": "70bd4e3d0d926bc49d6d36aacc9c3d66d1ba9a7817d4bb7fa908225aaf63853f",
+      "profile_sha256": "a39a7f63ad7cea88ac0a642ecd1a38c11ef3ea727fe97d654bb4cb7297f77a36",
+      "command": [
+        "C:\\study\\NIR_KP_6_SEM\\NIR_KR_7_SEM\\cluster-anomaly-detection\\.cache\\group-runtime.exe",
+        "--profile",
+        "configs/group-profile.summit-v1.json",
+        "--groups",
+        "16",
+        "--window",
+        "D2",
+        "--output",
+        "results\\group-runtime-performance-full-v1\\g16-r1"
+      ]
+    }
+  ]
+}

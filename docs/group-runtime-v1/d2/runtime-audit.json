@@ -1,0 +1,12 @@
+{
+  "status": "PASS",
+  "D2_group_ticks": 46080,
+  "local_B1_states": 829440,
+  "local_B1_scores": "all exact versus preserved export",
+  "local_B1_anomalies": 14341,
+  "R_B_binary": "exact versus NumPy replay",
+  "max_abs_R_error": 0.0,
+  "max_abs_B_error": 0.0,
+  "temporal_candidates": "all 184320 exact versus independent causal trailing-window OR",
+  "event_segmentation": "all contiguous runs exactly match; duration and IF support verified"
+}

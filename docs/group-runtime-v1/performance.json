@@ -1,0 +1,351 @@
+{
+  "platform": "Windows-11-10.0.26200-SP0",
+  "processor": "Intel64 Family 6 Model 154 Stepping 3, GenuineIntel",
+  "binary_sha256": "72a636e3dbe50669e550ffde6cc1c0b2fa6f5ce4bad37641f3f332b4fcf0b915",
+  "mode": "summary-only; warm OS cache after full D2 run; no cache eviction",
+  "repeats": 3,
+  "rows": [
+    {
+      "groups": 4,
+      "repeat": 1,
+      "wall_seconds": 4.815311099999235,
+      "exit_code": 0,
+      "peak_working_set_bytes": 93048832,
+      "analysis_seconds": 4.0241331,
+      "timing": {
+        "features_seconds": 0.09122650000000004,
+        "r_seconds": 0.022027799999999997,
+        "b_seconds": 0,
+        "y_seconds": 0.014601800000000002,
+        "if_seconds": 1.1964206000000008,
+        "temporal_seconds": 0.0069525
+      },
+      "sampled_peak_heap_bytes": 24018664,
+      "host_states_per_second": 51529.11070461362,
+      "event_counts": {
+        "0": 78,
+        "10": 77,
+        "30": 77,
+        "60": 72
+      },
+      "run_id": "25ab76b91c034649c9dca39b9cbcbab0f96a2e10ea2c5a80451fcf1dc2fc276c",
+      "profile_sha256": "a39a7f63ad7cea88ac0a642ecd1a38c11ef3ea727fe97d654bb4cb7297f77a36",
+      "command": [
+        "C:\\study\\NIR_KP_6_SEM\\NIR_KR_7_SEM\\cluster-anomaly-detection\\.cache\\group-runtime.exe",
+        "--profile",
+        "configs/group-profile.summit-v1.json",
+        "--groups",
+        "4",
+        "--window",
+        "D2",
+        "--summary-only",
+        "--output",
+        "results\\group-runtime-performance-v1\\g4-r1"
+      ]
+    },
+    {
+      "groups": 4,
+      "repeat": 2,
+      "wall_seconds": 4.300201899999593,
+      "exit_code": 0,
+      "peak_working_set_bytes": 43524096,
+      "analysis_seconds": 4.0483923,
+      "timing": {
+        "features_seconds": 0.10387900000000004,
+        "r_seconds": 0.0204492,
+        "b_seconds": 0.0045071,
+        "y_seconds": 0.0125817,
+        "if_seconds": 1.1268989000000011,
+        "temporal_seconds": 0.0057178
+      },
+      "sampled_peak_heap_bytes": 24193496,
+      "host_states_per_second": 51220.33257498292,
+      "event_counts": {
+        "0": 78,
+        "10": 77,
+        "30": 77,
+        "60": 72
+      },
+      "run_id": "25ab76b91c034649c9dca39b9cbcbab0f96a2e10ea2c5a80451fcf1dc2fc276c",
+      "profile_sha256": "a39a7f63ad7cea88ac0a642ecd1a38c11ef3ea727fe97d654bb4cb7297f77a36",
+      "command": [
+        "C:\\study\\NIR_KP_6_SEM\\NIR_KR_7_SEM\\cluster-anomaly-detection\\.cache\\group-runtime.exe",
+        "--profile",
+        "configs/group-profile.summit-v1.json",
+        "--groups",
+        "4",
+        "--window",
+        "D2",
+        "--summary-only",
+        "--output",
+        "results\\group-runtime-performance-v1\\g4-r2"
+      ]
+    },
+    {
+      "groups": 4,
+      "repeat": 3,
+      "wall_seconds": 4.442215499999293,
+      "exit_code": 0,
+      "peak_working_set_bytes": 42872832,
+      "analysis_seconds": 4.1916886,
+      "timing": {
+        "features_seconds": 0.07345049999999999,
+        "r_seconds": 0.0149605,
+        "b_seconds": 0.0026282,
+        "y_seconds": 0.007229500000000001,
+        "if_seconds": 1.2577302000000008,
+        "temporal_seconds": 0.0090839
+      },
+      "sampled_peak_heap_bytes": 23896920,
+      "host_states_per_second": 49469.32365157087,
+      "event_counts": {
+        "0": 78,
+        "10": 77,
+        "30": 77,
+        "60": 72
+      },
+      "run_id": "25ab76b91c034649c9dca39b9cbcbab0f96a2e10ea2c5a80451fcf1dc2fc276c",
+      "profile_sha256": "a39a7f63ad7cea88ac0a642ecd1a38c11ef3ea727fe97d654bb4cb7297f77a36",
+      "command": [
+        "C:\\study\\NIR_KP_6_SEM\\NIR_KR_7_SEM\\cluster-anomaly-detection\\.cache\\group-runtime.exe",
+        "--profile",
+        "configs/group-profile.summit-v1.json",
+        "--groups",
+        "4",
+        "--window",
+        "D2",
+        "--summary-only",
+        "--output",
+        "results\\group-runtime-performance-v1\\g4-r3"
+      ]
+    },
+    {
+      "groups": 8,
+      "repeat": 1,
+      "wall_seconds": 5.82159159999901,
+      "exit_code": 0,
+      "peak_working_set_bytes": 43085824,
+      "analysis_seconds": 5.5552555,
+      "timing": {
+        "features_seconds": 0.18321029999999996,
+        "r_seconds": 0.046448500000000004,
+        "b_seconds": 0.005702799999999999,
+        "y_seconds": 0.031898699999999995,
+        "if_seconds": 2.503556999999999,
+        "temporal_seconds": 0.0128088
+      },
+      "sampled_peak_heap_bytes": 25456936,
+      "host_states_per_second": 74653.63204266662,
+      "event_counts": {
+        "0": 147,
+        "10": 145,
+        "30": 147,
+        "60": 139
+      },
+      "run_id": "869fe5530ee2d86190fb03490b18d01275df45dd6f7d55e51ce83193baa9b486",
+      "profile_sha256": "a39a7f63ad7cea88ac0a642ecd1a38c11ef3ea727fe97d654bb4cb7297f77a36",
+      "command": [
+        "C:\\study\\NIR_KP_6_SEM\\NIR_KR_7_SEM\\cluster-anomaly-detection\\.cache\\group-runtime.exe",
+        "--profile",
+        "configs/group-profile.summit-v1.json",
+        "--groups",
+        "8",
+        "--window",
+        "D2",
+        "--summary-only",
+        "--output",
+        "results\\group-runtime-performance-v1\\g8-r1"
+      ]
+    },
+    {
+      "groups": 8,
+      "repeat": 2,
+      "wall_seconds": 5.802207999999155,
+      "exit_code": 0,
+      "peak_working_set_bytes": 43163648,
+      "analysis_seconds": 5.5388899,
+      "timing": {
+        "features_seconds": 0.17289490000000007,
+        "r_seconds": 0.0374774,
+        "b_seconds": 0.0049572,
+        "y_seconds": 0.0275524,
+        "if_seconds": 2.504883999999998,
+        "temporal_seconds": 0.016677
+      },
+      "sampled_peak_heap_bytes": 24955968,
+      "host_states_per_second": 74874.20899989364,
+      "event_counts": {
+        "0": 147,
+        "10": 145,
+        "30": 147,
+        "60": 139
+      },
+      "run_id": "869fe5530ee2d86190fb03490b18d01275df45dd6f7d55e51ce83193baa9b486",
+      "profile_sha256": "a39a7f63ad7cea88ac0a642ecd1a38c11ef3ea727fe97d654bb4cb7297f77a36",
+      "command": [
+        "C:\\study\\NIR_KP_6_SEM\\NIR_KR_7_SEM\\cluster-anomaly-detection\\.cache\\group-runtime.exe",
+        "--profile",
+        "configs/group-profile.summit-v1.json",
+        "--groups",
+        "8",
+        "--window",
+        "D2",
+        "--summary-only",
+        "--output",
+        "results\\group-runtime-performance-v1\\g8-r2"
+      ]
+    },
+    {
+      "groups": 8,
+      "repeat": 3,
+      "wall_seconds": 5.7809827999990375,
+      "exit_code": 0,
+      "peak_working_set_bytes": 42942464,
+      "analysis_seconds": 5.5292069999999995,
+      "timing": {
+        "features_seconds": 0.22473590000000004,
+        "r_seconds": 0.0396227,
+        "b_seconds": 0.002005,
+        "y_seconds": 0.0219767,
+        "if_seconds": 2.470894699999997,
+        "temporal_seconds": 0.022143799999999995
+      },
+      "sampled_peak_heap_bytes": 24497352,
+      "host_states_per_second": 75005.33078251548,
+      "event_counts": {
+        "0": 147,
+        "10": 145,
+        "30": 147,
+        "60": 139
+      },
+      "run_id": "869fe5530ee2d86190fb03490b18d01275df45dd6f7d55e51ce83193baa9b486",
+      "profile_sha256": "a39a7f63ad7cea88ac0a642ecd1a38c11ef3ea727fe97d654bb4cb7297f77a36",
+      "command": [
+        "C:\\study\\NIR_KP_6_SEM\\NIR_KR_7_SEM\\cluster-anomaly-detection\\.cache\\group-runtime.exe",
+        "--profile",
+        "configs/group-profile.summit-v1.json",
+        "--groups",
+        "8",
+        "--window",
+        "D2",
+        "--summary-only",
+        "--output",
+        "results\\group-runtime-performance-v1\\g8-r3"
+      ]
+    },
+    {
+      "groups": 16,
+      "repeat": 1,
+      "wall_seconds": 8.623286899999584,
+      "exit_code": 0,
+      "peak_working_set_bytes": 43098112,
+      "analysis_seconds": 8.3733991,
+      "timing": {
+        "features_seconds": 0.3899812999999999,
+        "r_seconds": 0.07805669999999997,
+        "b_seconds": 0.012918000000000002,
+        "y_seconds": 0.0718389,
+        "if_seconds": 4.961538900000016,
+        "temporal_seconds": 0.0326352
+      },
+      "sampled_peak_heap_bytes": 24441936,
+      "host_states_per_second": 99056.54682099173,
+      "event_counts": {
+        "0": 285,
+        "10": 292,
+        "30": 295,
+        "60": 287
+      },
+      "run_id": "70bd4e3d0d926bc49d6d36aacc9c3d66d1ba9a7817d4bb7fa908225aaf63853f",
+      "profile_sha256": "a39a7f63ad7cea88ac0a642ecd1a38c11ef3ea727fe97d654bb4cb7297f77a36",
+      "command": [
+        "C:\\study\\NIR_KP_6_SEM\\NIR_KR_7_SEM\\cluster-anomaly-detection\\.cache\\group-runtime.exe",
+        "--profile",
+        "configs/group-profile.summit-v1.json",
+        "--groups",
+        "16",
+        "--window",
+        "D2",
+        "--summary-only",
+        "--output",
+        "results\\group-runtime-performance-v1\\g16-r1"
+      ]
+    },
+    {
+      "groups": 16,
+      "repeat": 2,
+      "wall_seconds": 8.600769200000286,
+      "exit_code": 0,
+      "peak_working_set_bytes": 43347968,
+      "analysis_seconds": 8.3511682,
+      "timing": {
+        "features_seconds": 0.38809330000000036,
+        "r_seconds": 0.07149779999999997,
+        "b_seconds": 0.0009992,
+        "y_seconds": 0.04672599999999999,
+        "if_seconds": 4.963721800000011,
+        "temporal_seconds": 0.02523239999999999
+      },
+      "sampled_peak_heap_bytes": 24713680,
+      "host_states_per_second": 99320.23641913955,
+      "event_counts": {
+        "0": 285,
+        "10": 292,
+        "30": 295,
+        "60": 287
+      },
+      "run_id": "70bd4e3d0d926bc49d6d36aacc9c3d66d1ba9a7817d4bb7fa908225aaf63853f",
+      "profile_sha256": "a39a7f63ad7cea88ac0a642ecd1a38c11ef3ea727fe97d654bb4cb7297f77a36",
+      "command": [
+        "C:\\study\\NIR_KP_6_SEM\\NIR_KR_7_SEM\\cluster-anomaly-detection\\.cache\\group-runtime.exe",
+        "--profile",
+        "configs/group-profile.summit-v1.json",
+        "--groups",
+        "16",
+        "--window",
+        "D2",
+        "--summary-only",
+        "--output",
+        "results\\group-runtime-performance-v1\\g16-r2"
+      ]
+    },
+    {
+      "groups": 16,
+      "repeat": 3,
+      "wall_seconds": 8.59773209999912,
+      "exit_code": 0,
+      "peak_working_set_bytes": 43945984,
+      "analysis_seconds": 8.3405856,
+      "timing": {
+        "features_seconds": 0.3554044999999997,
+        "r_seconds": 0.0752064,
+        "b_seconds": 0.0056754,
+        "y_seconds": 0.0608718,
+        "if_seconds": 5.028194799999999,
+        "temporal_seconds": 0.0205613
+      },
+      "sampled_peak_heap_bytes": 24546128,
+      "host_states_per_second": 99446.25470902186,
+      "event_counts": {
+        "0": 285,
+        "10": 292,
+        "30": 295,
+        "60": 287
+      },
+      "run_id": "70bd4e3d0d926bc49d6d36aacc9c3d66d1ba9a7817d4bb7fa908225aaf63853f",
+      "profile_sha256": "a39a7f63ad7cea88ac0a642ecd1a38c11ef3ea727fe97d654bb4cb7297f77a36",
+      "command": [
+        "C:\\study\\NIR_KP_6_SEM\\NIR_KR_7_SEM\\cluster-anomaly-detection\\.cache\\group-runtime.exe",
+        "--profile",
+        "configs/group-profile.summit-v1.json",
+        "--groups",
+        "16",
+        "--window",
+        "D2",
+        "--summary-only",
+        "--output",
+        "results\\group-runtime-performance-v1\\g16-r3"
+      ]
+    }
+  ]
+}
