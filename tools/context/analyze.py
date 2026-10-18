@@ -5,9 +5,10 @@ import numpy as np
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-from context_stats import (quantile,describe,calibrate,support,partition,topk,physical,
+sys.path.insert(0,str(Path(__file__).resolve().parents[2]))
+from tools.context.context_stats import (quantile,describe,calibrate,support,partition,topk,physical,
     physical_thresholds,select_events,joint_events,runs_summary,linear_runs,holm,empirical_tail,increments)
-from diagnostic_stats import pearson
+from tools.diagnostics.diagnostic_stats import pearson
 
 DTYPE=np.dtype([('timestamp','<i8'),('host','<u4'),('available','<u4'),
                 ('features','<f8',(18,)),('scores','<f8',(6,)),('distance','<f8')])
