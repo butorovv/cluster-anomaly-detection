@@ -1,5 +1,66 @@
 # Паспортный эталон Summit
 
+## Контрольная точка №1 — 18.10.2026
+
+**Y=unknown; подтверждённых sensor-compatible hard bounds: 0.**
+Полная актуальная таблица CPU/GPU/PSU и 288 хостов находится в
+[аппаратном реестре](summit-hardware-inventory.md), машиночитаемая версия —
+[JSON](../configs/summit-hardware-reference.json). См. также
+[mapping к F18](hardware-to-f18-mapping.md),
+[реальные распределения D1](group-detection-d1-final/README.md) и
+[решение контрольной точки](group-detection-checkpoint-1.md).
+Исходная таблица от 17.10 ниже сохраняет прежний provenance; новые сведения
+не разрешают подставить номинальную мощность вместо отсутствующего Y.
+
+AC922 8335-GTW — предметный кандидат типовой конфигурации, но точный MTM/SKU
+288 хостов не подтверждён. ORNL описывает аналог leconte как 8335-GTW,
+POWER9 2.2, V100-SXM2-16GB. Его PVR/память/cap не переносятся на другие хосты.
+На leconte cap временно ограничен 250 W из-за охлаждения — это пример
+различия board rating и установленного ограничения, **не cap Summit**.
+[ORNL ExCL, Description / GPU Performance](https://docs.excl.ornl.gov/system-overview/leconte).
+
+IBM GTW 22-core option имеет base/turbo 2.78/3.07 GHz; таблица 190 W
+того же руководства относится к GTG 16/20-core, не к искомому Summit CPU.
+[IBM REDP-5472, §§1.2.2,2.2.2,3.3](https://www.redbooks.ibm.com/redpapers/pdfs/redp5472.pdf).
+GTH/GTX — иные варианты: GTX EP0S 22-core 2.8/3.1 GHz нельзя выдавать
+за установленный SKU. Environmental inlet 5–40 °C не является core limit.
+[IBM REDP-5494, tables 2-2 / 3-1](https://www.redbooks.ibm.com/redpapers/pdfs/redp5494.pdf).
+
+Официальные thermal qualification 80 °C, GPU max operating 83 °C, HBM max
+operating 85 °C, 50% slowdown 87 °C, shutdown 90 °C найдены для **PCIe**.
+Для SXM2 эти числа внесены в реестр как not_applicable; соответствующие
+SXM2-specific limits и установленный firmware binding остаются unknown.
+[NVIDIA V100 PCIe Product Brief, Table 5, PDF p.9](https://images.nvidia.com/content/tesla/pdf/Tesla-V100-PCIe-Product-Brief.pdf).
+SXM2 300 W и PCIe 250 W различаются в
+[NVIDIA Specifications p.1](https://images.nvidia.com/content/pdf/vgpu/data-sheet/nvidia-v100.pdf).
+
+PSU FSF069 — кандидат, не подтверждённая FRU выбранных хостов. Первичный
+80 PLUS report IBM FSF069 указывает DC rating 2200 W, AC input 200–277 V,
+12 A, 50–60 Hz. При 230 V / 60 Hz измерены КПД 95.11% на половинной
+нагрузке и 92.62% на полной, full-load AC/DC 2386/2210 W, main/standby
+output 12.23/12.12 V. Fan power исключена из расчёта КПД. Эти измерения
+не являются универсальным КПД, AC input bound или hardware alarm.
+[80 PLUS FSF069, Rated Specifications / Loading and Efficiency, p.1](https://www.clearesult.com/80plus/sites/80plus/files/manufacturer-certificate/ibm-fsf069-3229.pdf).
+Точный изготовитель/FRU установленных PSU, thermal conditions и load sharing
+не установлены; AcBel/OEM атрибуция кандидата не является host inventory.
+
+Физический sanity check D1: individual GPU power 32.8–358.8 W, CPU DC
+23–80.6 W, PSU AC 353–1138.8 W, GPU core 27–56.8 °C, CPU mean
+24.229–35.200 °C. Полные min/median/Q99/max и справочное число GPU samples
+>300 W сохранены в диагностике. Ни один диапазон не используется для
+выбора допустимого предела: GPU >300 W требует проверки сенсора/SKU/cap,
+PSU AC не сравнивается с DC rating, CPU mean не удостоверяет core max.
+
+Топология уточнена: обе карточки датасета документируют cabinet column/row
+и node position bottom→top. Для a01–a16 можно записать source-documented
+cabinet coordinates. Общие PDU/cooling loop, IB connections и независимая
+сверка facility inventory неизвестны.
+[ClusterWise Data Fields, hostname](https://huggingface.co/datasets/MachaParfait/ClusterWise/blob/main/README.md).
+Локальная raw schema имеет node_state, label, xid, jobs и температуры вне
+F18, но не содержит thresholds, alarms, serial/FRU или caps. Подробнее в mapping.
+
+## Исходная проверка 17.10.2026
+
 Проверено 17.10.2026 по первичным источникам. FACT — опубликованная
 характеристика/описание датчика; INFERENCE — вывод о применимости; UNVERIFIED —
 отсутствующая привязка к выбранным hostname. Здесь нет нового детектора или
