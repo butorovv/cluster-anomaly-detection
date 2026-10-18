@@ -1,0 +1,95 @@
+{
+  "status": "PASS",
+  "protected_files": 150,
+  "protected_bytes": 2962196937,
+  "baseline_files": 32,
+  "baseline_all_unchanged": true,
+  "replay_events_sha256": "91f003c0ac7376e11a95c84f6bdefcbabdb88a5b17395618c33df2f873c5c91f",
+  "replay_events_byte_identical": true,
+  "secret_scan": {
+    "files": 65,
+    "rules": [
+      "private_key",
+      "github_token",
+      "cloud_key",
+      "openai_key",
+      "credential_url"
+    ],
+    "findings": [],
+    "scope": "All PR text changes including review additions; pattern scan, not a proof of absence"
+  },
+  "largest_files": [
+    {
+      "path": "docs/group-runtime-v1/d2/timeline.csv",
+      "bytes": 14224270
+    },
+    {
+      "path": "docs/group-runtime-v1/d2/temporal.csv",
+      "bytes": 7160084
+    },
+    {
+      "path": "docs/group-runtime-v1/d2/r-evidence.ndjson",
+      "bytes": 5013838
+    },
+    {
+      "path": "docs/group-runtime-v1/d2/events.json",
+      "bytes": 1262401
+    },
+    {
+      "path": "docs/group-runtime-v1/d2/events.csv",
+      "bytes": 436797
+    },
+    {
+      "path": "configs/group-profile.summit-v1.json",
+      "bytes": 297257
+    },
+    {
+      "path": "docs/group-runtime-v1/d2/figures/zero-mad-channels.svg",
+      "bytes": 234561
+    },
+    {
+      "path": "docs/group-runtime-v1/d2/figures/event-example.png",
+      "bytes": 229269
+    }
+  ],
+  "temporal_rows": 184321,
+  "temporal_bytes": 7160084,
+  "total_PR_file_bytes": 30410233,
+  "dependency_changes": [],
+  "checks": {
+    "go_test_all": "PASS",
+    "go_build_all": "PASS",
+    "go_vet_all": "PASS",
+    "contract_tests": "3 added; Y mutation and Flush regression observed FAIL before fix, PASS after",
+    "python_full_suite": {
+      "passed": 117,
+      "skipped": 6,
+      "cache_warning": "pytest cache creation denied; tests unaffected"
+    },
+    "python_e2e_explicit_binary": {
+      "passed": 1,
+      "skipped": 0
+    },
+    "remaining_skips": "5 PostgreSQL tests: TEST_DATABASE_URL not set",
+    "real_B1": "PASS; 288 exact D1 thresholds, 829440 D2 states, 14341 positives",
+    "independent_audit": "PASS; see comparison.json; includes all temporal occurrence times, witnesses, event IDs and IF/outside E"
+  },
+  "review_roles": [
+    {
+      "role": "orchestrator",
+      "model": "gpt-6.1-sol",
+      "reasoning": "high",
+      "verification": "configured, not runtime verified"
+    },
+    {
+      "role": "inspector",
+      "mode": "review",
+      "model": "gpt-6-luna",
+      "reasoning": "low",
+      "verification": "configured, not runtime verified",
+      "scope": "read-only assigned internal/group temporal/Y/types/tests diff",
+      "result": "No actionable findings; no tests executed by inspector"
+    }
+  ],
+  "PR_files_after_review": 65
+}

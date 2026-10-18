@@ -1,0 +1,28 @@
+{
+  "status": "PASS",
+  "window": "D1 only",
+  "group_ticks": 46080,
+  "host_states": 829440,
+  "rtol": 1e-08,
+  "atol": 1e-08,
+  "maximum_absolute_errors": {
+    "host_median": 0,
+    "host_mad": 0,
+    "host_scale": 0,
+    "median": 0,
+    "mad": 0,
+    "scale": 0,
+    "normalized_mean": 0,
+    "covariance": 0,
+    "pseudoinverse": 5.113964807179627e-14,
+    "singular_values": 2.8421709430404007e-13,
+    "r_threshold": 0,
+    "b_threshold": 4.263256414560601e-13,
+    "vectors": 0,
+    "r_score": 0,
+    "b_distance": 1.2647660696529783e-12
+  },
+  "binary_R_B_decisions": "exact for all 46080 group ticks",
+  "reference_sha256": "a2fe4b154468141841181e77078728b17d653ede379ace5879e13f968a6b4234",
+  "group_profile_sha256": "a39a7f63ad7cea88ac0a642ecd1a38c11ef3ea727fe97d654bb4cb7297f77a36"
+}
