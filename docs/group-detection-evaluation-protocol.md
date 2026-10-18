@@ -1,5 +1,32 @@
 # Протокол будущих групповых экспериментов
 
+## Frozen runtime research v1 — до первого D2
+
+Продолжение пользователя разрешило первый исследовательский runtime без
+заявления о согласовании руководителем. База — main после PR №9; параметры
+зафиксированы в `configs/group-detection.summit-v1.json`. Сначала Go fit D1 и
+полная numerical parity с checkpoint Python; только после PASS — D2.
+Y unknown, preliminary R+B и full vote2 различаются по актуальному разделу
+математической спецификации. Floor, пороги, состав групп и 10D не меняются по D2.
+
+Основной δ=0; δ=10/30/60 s — все заранее заданные sensitivity результаты.
+Примеры выбираются детерминированно: самое длинное δ=0 событие (ties group,
+detection time); если событий нет — max R/threshold с ties timestamp/group.
+Проблемные MAD-каналы показываются все четыре. Не выбирать только красивый эпизод.
+
+Измерения производительности: 4/8/16 вложенных групп, 3 повторения одного
+скомпилированного binary, прежние group/IF/B1 модели и параметры. Сохраняются
+process wall, peak working set, sampled Go heap, разбивка стадий, summary-only
+и полный materialized run. Reader всё равно читает общий Parquet 16 групп;
+поэтому I/O footprint фиксирован, а scoring и outside universe меняются.
+Это ограничивает интерпретацию масштабирования. Отдельного Kafka latency вывода нет.
+
+Зависимость R/B: all-known contingency, Jaccard, phi при определённости,
+R-only/B-only/joint shares и conditional probabilities; temporal intersections
+для всех δ. Zero-MAD: raw R определяющая пара, любой превышающий zero-MAD канал,
+активная R-пара в temporal event, амплитуды °C и z=amplitude/scale. Без альтернативного
+floor/threshold перебора. Отчёт содержит нулевые/unknown результаты и ограничения.
+
 18.10.2026: выполнена только предварительная [D1 диагностика](group-detection-d1-final/README.md)
 для [контрольной точки №1](group-detection-checkpoint-1.md). D2/D3 групповые
 эксперименты не запущены; параметры/формулы протокола сохранены.

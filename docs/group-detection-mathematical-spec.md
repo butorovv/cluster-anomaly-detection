@@ -1,5 +1,43 @@
 # Групповое обнаружение Summit: математическая спецификация
 
+## Исполняемый исследовательский контракт v1 — продолжение 18.10.2026
+
+По новому ТЗ пользователя приняты для первого прототипа (это **не утверждение
+о согласовании научным руководителем**): d=10, N=2880 D1, epsilon=1e-4 W/°C,
+R temporal median/MAD и два разных хоста, B Welford ddof1/rcond1e-12/full rank,
+strict D1 Q99, замороженный B1, Y только approved_sensor_bounds, preliminary R+B.
+Конфигурация до первого D2: `configs/group-detection.summit-v1.json`,
+версия `summit-group-research-v1`. Диагностика контрольной точки не повторяется
+как новое аппаратное исследование; Go/Python D1 parity — регрессия реализации.
+
+При Y unknown различаются **общее vote2** и **preliminary candidate**:
+общее трёхзначное vote2 остаётся формулой раздела 7; preliminary candidate
+положителен только при temporal R=B=positive. Когда оба R/B известны,
+отсутствие их пересечения даёт отрицательный preliminary candidate (R-only/B-only
+сохраняются). При unknown R или B preliminary candidate неизвестен и событие
+прерывается как censored by missing. Один лишь unknown Y не означает missing
+телеметрии. Все preliminary события: `mode=preliminary`,
+`criteria_incomplete=true`, `hardware_confirmation=insufficient_criteria`.
+При доступном Y применяется vote2, `mode=full`, `hardware_confirmation=criteria_available`:
+даже full event не является подтверждённой аппаратной неисправностью.
+
+Raw criterion, temporal occurrence, vote2 и preliminary/full candidate сохраняются
+раздельно. Смена mode разрывает событие. `closed_event_time` — первый false/unknown
+tick, `last_positive_time` — предыдущий положительный tick; duration_grid включает
+последнюю положительную ячейку 10 s. При gap закрытие на первом пропущенном tick,
+память TTL сбрасывается. При смене split создаётся новый Engine. ID из run identity,
+group, delta и detection time; нет повторов на продолжающемся событии.
+
+Номиналы GPU/PSU не участвуют в Y. Независимое аппаратное подтверждение отсутствует.
+Весь дальнейший текст proposal v1 сохраняет исходные формулы; исторические
+формулировки о необходимости согласования/неисполняемости описывают контрольную
+точку, а действующие решения перечислены в этом разделе.
+
+Численная регрессия D1: rtol=1e-8, atol=1e-8 для физических векторов,
+median/MAD/scale, covariance/pseudoinverse, score/D² и Q99; бинарные R/B решения
+должны совпасть точно на всех 46080 group ticks. Допуски фиксированы до D2;
+они описывают различия float64 NumPy/Gonum, а не расширяют порог детектора.
+
 Версия предложения 1, 17.10.2026. **Статус: для согласования с П. А. Паниловым.**
 
 Контрольная точка №1 от 18.10.2026: [заключение и вопросы](group-detection-checkpoint-1.md),
