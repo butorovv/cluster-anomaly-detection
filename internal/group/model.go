@@ -134,6 +134,7 @@ func (p *GroupProfile) R(u [18]HostVector) RResult {
 	if p == nil || p.Observations == 0 {
 		return out
 	}
+	out.Threshold = ptr(p.RThreshold)
 	// Scan channels then negative/positive signs: ties retain lowest channel/sign.
 	best := -1.
 	var pair [2]int
@@ -219,7 +220,7 @@ func (p *GroupProfile) B(v Vector) Criterion {
 	}
 	x, e := p.Distance(v)
 	if e != nil {
-		return Criterion{State: Unknown, Reason: e.Error()}
+		return Criterion{State: Unknown, Reason: e.Error(), Threshold: ptr(*p.BThreshold)}
 	}
 	s := Negative
 	if x > *p.BThreshold {
@@ -409,6 +410,39 @@ func (p *Profile) Validate() error {
 		if g.BThreshold != nil {
 			if g.Rank != 10 || g.BReason != "" || g.Observations < 11 || !analysis.Finite(*g.BThreshold) || *g.BThreshold < 0 || len(g.Eigen) != 10 || g.Eigen[0] < 0 || g.Reconstruction > 1e-7 {
 				return fmt.Errorf("invalid B model")
+			}
+			// Do not trust serialized rank/reconstruction diagnostics: validate the
+			// loaded covariance and inverse themselves before reporting normal.
+			sym := mat.NewSymDense(10, nil)
+			flat := make([]float64, 100)
+			for i := 0; i < 10; i++ {
+				for j := 0; j < 10; j++ {
+					if g.Covariance[i][j] != g.Covariance[j][i] {
+						return fmt.Errorf("asymmetric covariance")
+					}
+					flat[i*10+j] = g.Covariance[i][j]
+					sym.SetSym(i, j, g.Covariance[i][j])
+				}
+			}
+			var eigen mat.EigenSym
+			var svd mat.SVD
+			if !eigen.Factorize(sym, false) || !svd.Factorize(mat.NewDense(10, 10, flat), mat.SVDNone) || svd.Rank(RCond) != 10 || eigen.Values(nil)[0] < 0 {
+				return fmt.Errorf("unusable loaded covariance")
+			}
+			for i := 0; i < 10; i++ {
+				for j := 0; j < 10; j++ {
+					x := 0.
+					for k := 0; k < 10; k++ {
+						x += g.Covariance[i][k] * g.Inverse[k][j]
+					}
+					want := 0.
+					if i == j {
+						want = 1
+					}
+					if math.Abs(x-want) > 1e-7 {
+						return fmt.Errorf("incompatible pseudoinverse")
+					}
+				}
 			}
 		}
 	}

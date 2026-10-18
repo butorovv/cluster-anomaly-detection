@@ -127,6 +127,18 @@ func TestRDirectionChannelAndZeroMADPair(t *testing.T) {
 	}
 }
 
+func TestLoadedProfileRejectsCorruptInverse(t *testing.T) {
+	// This small tracked artifact needs no external prepared data or models.
+	p, err := LoadProfile("../../configs/group-profile.summit-v1.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	p.Groups[0].Inverse = Matrix{}
+	if p.Validate() == nil {
+		t.Fatal("corrupt inverse passed serialized diagnostics as valid")
+	}
+}
+
 func TestHostChannelsUsesF18SumsAndMeans(t *testing.T) {
 	u, err := HostChannels(validTestRecord())
 	if err != nil {

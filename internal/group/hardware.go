@@ -123,7 +123,12 @@ func (h *Hardware) Evaluate(hosts []string, records map[string]domain.TelemetryR
 		idx[n] = i
 	}
 	positives, unknown := 0, 0
+	seenHosts := map[string]bool{}
 	for _, host := range hosts {
+		if seenHosts[host] {
+			continue
+		}
+		seenHosts[host] = true
 		applicable, positive := 0, false
 		r, ok := records[host]
 		if ok && (r.Hostname != host || r.Validate() != nil) {

@@ -130,3 +130,18 @@ func TestModeTransitionAndUnknownCloses(t *testing.T) {
 		t.Fatal(es, err)
 	}
 }
+
+func TestFullYBEventRetainsDistinctHardwareHosts(t *testing.T) {
+	start := time.Date(2022, 1, 18, 8, 0, 0, 0, time.UTC)
+	e, _ := NewEngine("cfg", "a01", 0, start)
+	r := temporalRaw(start, Negative, Positive, Positive)
+	r.Y.Hosts = map[string]State{"a01n03": Positive, "a01n04": Positive}
+	tr, _, err := e.Step(r)
+	if err != nil || tr.Candidate != Positive || tr.Mode != "full" || tr.CriteriaIncomplete {
+		t.Fatal(tr, err)
+	}
+	es, err := e.Flush(start.Add(10 * time.Second))
+	if err != nil || len(es) != 1 || len(es[0].WitnessHosts) != 2 || es[0].HardwareConfirmation != "criteria_available" {
+		t.Fatal(es, err)
+	}
+}

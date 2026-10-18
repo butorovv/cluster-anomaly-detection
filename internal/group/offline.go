@@ -156,6 +156,9 @@ func Evaluate(p *Profile, t Tick, hw *Hardware, ld *local.Detector, groups int, 
 		started = time.Now()
 		if r.Vector == nil {
 			r.R = RResult{Criterion: Criterion{State: Unknown, Reason: "incomplete_group"}, Channel: -1}
+			if g.Observations > 0 {
+				r.R.Threshold = ptr(g.RThreshold)
+			}
 		} else {
 			r.R = g.R(u)
 		}
@@ -163,6 +166,9 @@ func Evaluate(p *Profile, t Tick, hw *Hardware, ld *local.Detector, groups int, 
 		started = time.Now()
 		if r.Vector == nil {
 			r.B = Criterion{State: Unknown, Reason: "incomplete_group"}
+			if g.BThreshold != nil {
+				r.B.Threshold = ptr(*g.BThreshold)
+			}
 		} else {
 			r.B = g.B(*r.Vector)
 		}

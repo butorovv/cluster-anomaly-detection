@@ -113,6 +113,14 @@ func (e *Engine) Step(raw Raw) (TemporalResult, []Event, error) {
 		}
 		if s == Positive {
 			e.states[i].positive = t
+			if i == 1 {
+				e.states[i].hosts = nil
+				for host, state := range raw.Y.Hosts {
+					if state == Positive {
+						e.states[i].hosts = append(e.states[i].hosts, host)
+					}
+				}
+			}
 			if i == 0 {
 				e.states[i].hosts = nil
 				e.states[i].zero = false
@@ -200,8 +208,13 @@ func (e *Engine) Step(raw Raw) (TemporalResult, []Event, error) {
 	} else {
 		ev.TTLExtensionTicks++
 	}
-	if r.State == Positive {
-		ev.WitnessHosts = append(ev.WitnessHosts, e.states[0].hosts...)
+	if r.State == Positive || y.State == Positive {
+		if r.State == Positive {
+			ev.WitnessHosts = append(ev.WitnessHosts, e.states[0].hosts...)
+		}
+		if y.State == Positive {
+			ev.WitnessHosts = append(ev.WitnessHosts, e.states[1].hosts...)
+		}
 		sort.Strings(ev.WitnessHosts)
 		ev.WitnessHosts = unique(ev.WitnessHosts)
 	}

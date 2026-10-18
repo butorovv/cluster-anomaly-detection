@@ -1,6 +1,31 @@
 package group
 
-import "testing"
+import (
+	"fmt"
+	"testing"
+	"time"
+)
+
+func TestEntireAbsentTickKeepsStatisticsAndIFUnknown(t *testing.T) {
+	p := &Profile{}
+	for i := 0; i < 16; i++ {
+		g := GroupProfile{Group: fmt.Sprintf("a%02d", i+1)}
+		for j := 0; j < 18; j++ {
+			g.Hosts = append(g.Hosts, fmt.Sprintf("%sn%02d", g.Group, j+1))
+		}
+		p.Groups = append(p.Groups, g)
+	}
+	hw, _ := NewHardware(nil)
+	rows, err := Evaluate(p, Tick{Timestamp: time.Date(2022, 1, 18, 8, 0, 0, 0, time.UTC)}, hw, nil, 4, &Timing{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, r := range rows {
+		if r.R.State != Unknown || r.B.State != Unknown || r.Y.State != Unknown || r.IF.S != nil || len(r.Missing) != 18 {
+			t.Fatalf("missing tick became normal: %+v", r)
+		}
+	}
+}
 
 func TestAnnotateOutsideUsesAvailableHostWeights(t *testing.T) {
 	rows := []Raw{

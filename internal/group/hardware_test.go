@@ -1,6 +1,7 @@
 package group
 
 import (
+	"math"
 	"testing"
 	"time"
 
@@ -9,6 +10,31 @@ import (
 
 func boundFor(host, sensor, boundary, unit string, lower, upper float64) Bound {
 	return Bound{ID: host + "-" + sensor, Hostname: host, Sensor: sensor, DeviceModel: "verified-device", Unit: unit, MeasurementBoundary: boundary, Aggregation: "10s_mean", SourceURL: "https://vendor.example/spec", Verified: true, Compatible: true, Lower: &lower, Upper: &upper}
+}
+
+func TestHardwareMissingSensorAndBoundSnapshot(t *testing.T) {
+	b := boundFor("a01n01", "gpu0_power", "DC", "W", 0, 100)
+	h, err := NewHardware([]Bound{b})
+	if err != nil {
+		t.Fatal(err)
+	}
+	*b.Upper = 1000 // approved limits are snapshotted, not mutable by the caller.
+	r := recordWithFeature("a01n01", 1, 101)
+	y := h.Evaluate([]string{"a01n01", "a01n02"}, map[string]domain.TelemetryRecord{"a01n01": r})
+	if y.Hosts["a01n01"] != Positive {
+		t.Fatal("caller mutated effective bound")
+	}
+	duplicate := h.Evaluate([]string{"a01n01", "a01n01"}, map[string]domain.TelemetryRecord{"a01n01": r})
+	if duplicate.State == Positive {
+		t.Fatal("duplicate hostname counted as distinct hosts")
+	}
+	r.GPUPower[0] = math.NaN()
+	r.AvailabilityMask &^= 1 << 4
+	r.Valid = false
+	y = h.Evaluate([]string{"a01n01", "a01n02"}, map[string]domain.TelemetryRecord{"a01n01": r})
+	if y.Hosts["a01n01"] != Unknown || y.State != Unknown {
+		t.Fatalf("missing sensor treated as known: %+v", y)
+	}
 }
 
 func recordWithFeature(host string, index int, value float64) domain.TelemetryRecord {
@@ -58,6 +84,9 @@ func TestHardwareEqualityAndDistinctHostVoting(t *testing.T) {
 		t.Fatalf("boundary equality should be negative and only one unknown host cannot make two breaches possible: %s", y.State)
 	}
 	r["a01n01"] = recordWithFeature("a01n01", 1, 101)
+	twoDevices := r["a01n01"]
+	twoDevices.GPUPower[1] = 101
+	r["a01n01"] = twoDevices
 	y = h.Evaluate(hosts, r)
 	if y.State != Unknown {
 		t.Fatalf("two device breaches on one host counted as two hosts: %s", y.State)
