@@ -1,0 +1,79 @@
+{
+  "status": "PASS",
+  "base_commit": "d623f2706a6a5ad04aa5b802e20d45d12acfca3f",
+  "protocol_commit": "7732621cb5832eb086c6aa7dcde2e6e05b304026",
+  "experiment_code_commit": "796ff3d77f4a538deecb543ac6f65bf41eefedaa",
+  "experiment_clean_tree": true,
+  "protocol_sha256": "2c62b356dcb2fafa4b4ee97f1817faedba0e54a89914db1c5ac3ed984f8a7795",
+  "protected_files": 371,
+  "protected_bytes": 2996652887,
+  "protected_all_unchanged": true,
+  "production_diff": "none",
+  "baseline_events_byte_identical": true,
+  "baseline_event_sha256": "91f003c0ac7376e11a95c84f6bdefcbabdb88a5b17395618c33df2f873c5c91f",
+  "baseline_counts": {
+    "R": 899,
+    "B": 3260,
+    "RB": 682,
+    "events": 285
+  },
+  "checks": {
+    "go_test_all": "PASS",
+    "go_build_all": "PASS",
+    "go_vet_all": "PASS",
+    "real_B1": "PASS; 288 exact D1 thresholds; 829440 D2 states;14341 positives",
+    "python": {
+      "passed": 124,
+      "skipped": 5,
+      "reason": "TEST_DATABASE_URL not set; explicit Replayer E2E passed"
+    },
+    "independent_control_audit": "PASS; 320 profiles; 921600 evaluated D2 group ticks, per-group counts/segment counts exact",
+    "go_python_probe": "PASS;176 baseline/perturbed requests",
+    "links": "PASS current README/architecture and new documents",
+    "figures": "5 PNG/SVG pairs; visually inspected",
+    "dependency_changes": "none",
+    "secret_scan": {
+      "files": 42,
+      "findings": [],
+      "known_example_placeholders": [
+        {
+          "path": "README.md",
+          "line": 218,
+          "rule": "credential_url"
+        },
+        {
+          "path": "README.md",
+          "line": 360,
+          "rule": "credential_url"
+        }
+      ],
+      "scope": "pattern scan; not proof of absence"
+    },
+    "new_artifacts": "Compact report ~1.59 MB; no raw NDJSON/control profiles/binaries committed"
+  },
+  "technical_test_fix": "new test module renamed to avoid collision with dataset/tests/test_validation.py; no experiment change",
+  "roles": [
+    {
+      "role": "orchestrator",
+      "model": "gpt-6.1-sol",
+      "reasoning": "high",
+      "verification": "configured, not runtime verified"
+    },
+    {
+      "role": "implementer",
+      "model": "gpt-6-luna",
+      "reasoning": "medium",
+      "verification": "configured, not runtime verified",
+      "scope": "Go probe and fixture tests; root reviewed and added null/binding checks"
+    },
+    {
+      "role": "inspector",
+      "mode": "review",
+      "model": "gpt-6-luna",
+      "reasoning": "low",
+      "verification": "configured, not runtime verified",
+      "scope": "D1/D2, grouping, controls, intervention accounting diff",
+      "result": "No actionable findings; read-only review, no tests by inspector"
+    }
+  ]
+}

@@ -1,4 +1,4 @@
-# Архитектурный контракт начального этапа КР
+# Архитектурный контракт проекта
 
 Modular monolith / multi-binary application, адаптированный из
 [WorkNet](https://github.com/butorovv/worknet-backend).
@@ -16,10 +16,18 @@ domain/usecase/repository и технические adapters. Здесь тот 
   завершение пары timestamp/group. Анализ отсутствует.
 - `internal/platform`: config, logger, PostgreSQL pool.
 - `tools/dataset`: Python 3.12 offline inspection, подготовка, COPY import.
+- `internal/local`, `cmd/local`: исполняемый локальный IF B1 с D1 thresholds.
+- `internal/group`, `cmd/group`: offline R/B/Y, профили, причинные GroupEvent,
+  IF support/outside context; [контракт runtime](group-detection-runtime.md).
+- `tools/groupvalidation`: отдельные исследовательские контроли состава групп
+  и вмешательств; production hostname-проверки и модели не меняются.
 
 Поток: raw Parquet → Builder → prepared D1/D2/D3 и PostgreSQL.
 Replayer читает prepared Parquet напрямую. PostgreSQL не участвует в вычислительном
-транспорте. Worker, Master, detection, grouping, monitoring, GUI и Kafka не реализованы.
+транспорте. Локальное/групповое обнаружение реализовано offline. Worker, Master,
+monitoring, GUI и Kafka не реализованы. Их будущий интерфейс описан в
+[проекте distributed-контракта](kr-distributed-detector-contract.md), не является
+уже работающей распределённой системой.
 
 Канонический V1: `db/source.json`. Все PK/FK/CHECK/UNIQUE, функции, триггеры,
 комментарии и связи сохранены. Пять строк metric_type — обязательный справочник,

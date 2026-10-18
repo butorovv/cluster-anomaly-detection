@@ -55,3 +55,22 @@ def test_control_matches_without_using_IF_or_event_data():
     complete[492] = False
     assert match_control(c, complete, 500, 2) == 508
     assert match_control(np.ones(20, dtype=np.int8), np.ones(20, bool), 0, 2) is None
+
+
+def test_arbitrary_host_order_refits_same_distribution_without_D2_training():
+    rng = np.random.Generator(np.random.PCG64(31415))
+    train = rng.normal(size=(128, 18, 5))
+    inference = rng.normal(size=(16, 18, 5))
+    order = rng.permutation(18)
+    p, reordered = fit_group(train), fit_group(train[:, order])
+    assert p['effective_rank'] == reordered['effective_rank'] == 10
+    a, b = score_group(p, inference), score_group(reordered, inference[:, order])
+    np.testing.assert_allclose(a['r_score'], b['r_score'], rtol=1e-8, atol=1e-8)
+    np.testing.assert_allclose(a['b_score'], b['b_score'], rtol=1e-8, atol=1e-8)
+    np.testing.assert_array_equal(a['r'], b['r'])
+    np.testing.assert_array_equal(a['b'], b['b'])
+    # Scoring a very different future stream cannot refit the calibration.
+    frozen = p['r_q99'], p['b_q99'], p['covariance'].copy()
+    score_group(p, inference+100)
+    assert p['r_q99'] == frozen[0] and p['b_q99'] == frozen[1]
+    np.testing.assert_array_equal(p['covariance'], frozen[2])

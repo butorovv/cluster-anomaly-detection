@@ -11,6 +11,7 @@ NumPy 2.3.5, PyArrow 26.0.0, Matplotlib 3.10.8, pytest 9.1.1).
 ```powershell
 go build -o bin/group-validation-probe.exe ./tools/groupvalidation/score
 python tools/groupvalidation/experiments.py --probe bin/group-validation-probe.exe --output results/NEW_GROUP_VALIDATION
+python tools/groupvalidation/audit.py --input results/NEW_GROUP_VALIDATION --output results/NEW_CONTROL_AUDIT.json
 python tools/groupvalidation/report.py --input results/NEW_GROUP_VALIDATION --output results/NEW_VALIDATION_REPORT
 python -m pytest tools/groupvalidation -q
 ```

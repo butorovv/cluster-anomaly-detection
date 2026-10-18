@@ -15,5 +15,6 @@ docs/group-runtime-review-v1/*.csv text eol=lf
 configs/group-validation-protocol-v1.json text eol=lf
 docs/group-validation-protocol-v1.md text eol=lf
 docs/group-validation-v1/*.json text eol=lf
+docs/group-validation-v1/*.md text eol=lf
 docs/group-validation-v1/*.csv text eol=lf
 docs/group-validation-v1/figures/*.svg text eol=lf
