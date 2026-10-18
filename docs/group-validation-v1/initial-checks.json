@@ -1,0 +1,14 @@
+{
+  "base_commit": "d623f2706a6a5ad04aa5b802e20d45d12acfca3f",
+  "PR10_merged": true,
+  "worktree_initially_clean": true,
+  "go_test_build_vet": "PASS",
+  "python": {
+    "passed": 118,
+    "skipped": 5,
+    "reason": "TEST_DATABASE_URL absent"
+  },
+  "protected_files": 371,
+  "protected_bytes": 2996652887,
+  "roles": "orchestrator gpt-6.1-sol high configured; no stage3 subagents yet"
+}
