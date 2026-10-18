@@ -1,0 +1,388 @@
+{
+  "status": "PASS",
+  "interpretation": "Sensitivity diagnostic only, not evidence of superiority or fault labels.",
+  "source_export_sha256": {
+    "D1": "e8cc48c208fc4ea003a9c29c62d7525325d67f9dc75fc9258665f5b5a90610d6",
+    "D2": "08d90d683924fb58c2bacbbbd356fa0ad785b25c80d0a607e80697f9ce9fd74f"
+  },
+  "numeric_tolerance": {
+    "rtol": 1e-08,
+    "atol": 1e-08
+  },
+  "baseline": {
+    "R": 899,
+    "B": 3260,
+    "RB": 682,
+    "events": 285
+  },
+  "diagnostic": {
+    "R": 726,
+    "B": 3260,
+    "RB": 550,
+    "events": 277
+  },
+  "R_changed": {
+    "removed": 181,
+    "added": 8
+  },
+  "per_group": [
+    {
+      "group": "a01",
+      "baseline_q99": 55.91549700400555,
+      "diagnostic_q99": 55.91549700400555,
+      "baseline_R": 32,
+      "diagnostic_R": 32,
+      "R_removed": 0,
+      "R_added": 0,
+      "B": 210,
+      "baseline_RB": 23,
+      "diagnostic_RB": 23,
+      "RB_removed": 0,
+      "RB_added": 0,
+      "baseline_events": 20,
+      "diagnostic_events": 20
+    },
+    {
+      "group": "a02",
+      "baseline_q99": 65.76259818456923,
+      "diagnostic_q99": 62.39014438718597,
+      "baseline_R": 199,
+      "diagnostic_R": 26,
+      "R_removed": 179,
+      "R_added": 6,
+      "B": 206,
+      "baseline_RB": 148,
+      "diagnostic_RB": 17,
+      "RB_removed": 133,
+      "RB_added": 2,
+      "baseline_events": 21,
+      "diagnostic_events": 14
+    },
+    {
+      "group": "a03",
+      "baseline_q99": 44.291682803784965,
+      "diagnostic_q99": 44.291682803784965,
+      "baseline_R": 34,
+      "diagnostic_R": 34,
+      "R_removed": 0,
+      "R_added": 0,
+      "B": 218,
+      "baseline_RB": 23,
+      "diagnostic_RB": 23,
+      "RB_removed": 0,
+      "RB_added": 0,
+      "baseline_events": 19,
+      "diagnostic_events": 19
+    },
+    {
+      "group": "a04",
+      "baseline_q99": 131.52770505144332,
+      "diagnostic_q99": 131.52770505144332,
+      "baseline_R": 29,
+      "diagnostic_R": 29,
+      "R_removed": 0,
+      "R_added": 0,
+      "B": 207,
+      "baseline_RB": 21,
+      "diagnostic_RB": 21,
+      "RB_removed": 0,
+      "RB_added": 0,
+      "baseline_events": 18,
+      "diagnostic_events": 18
+    },
+    {
+      "group": "a05",
+      "baseline_q99": 125.4571852954611,
+      "diagnostic_q99": 125.4571852954611,
+      "baseline_R": 21,
+      "diagnostic_R": 21,
+      "R_removed": 0,
+      "R_added": 0,
+      "B": 211,
+      "baseline_RB": 16,
+      "diagnostic_RB": 16,
+      "RB_removed": 0,
+      "RB_added": 0,
+      "baseline_events": 15,
+      "diagnostic_events": 15
+    },
+    {
+      "group": "a06",
+      "baseline_q99": 123.43371301703161,
+      "diagnostic_q99": 123.43371301703161,
+      "baseline_R": 30,
+      "diagnostic_R": 30,
+      "R_removed": 0,
+      "R_added": 0,
+      "B": 192,
+      "baseline_RB": 19,
+      "diagnostic_RB": 19,
+      "RB_removed": 0,
+      "RB_added": 0,
+      "baseline_events": 18,
+      "diagnostic_events": 18
+    },
+    {
+      "group": "a07",
+      "baseline_q99": 49.23794551440842,
+      "diagnostic_q99": 49.23794551440842,
+      "baseline_R": 25,
+      "diagnostic_R": 25,
+      "R_removed": 0,
+      "R_added": 0,
+      "B": 181,
+      "baseline_RB": 19,
+      "diagnostic_RB": 19,
+      "RB_removed": 0,
+      "RB_added": 0,
+      "baseline_events": 16,
+      "diagnostic_events": 16
+    },
+    {
+      "group": "a08",
+      "baseline_q99": 62.72739619933147,
+      "diagnostic_q99": 62.72739619933147,
+      "baseline_R": 33,
+      "diagnostic_R": 33,
+      "R_removed": 0,
+      "R_added": 0,
+      "B": 205,
+      "baseline_RB": 23,
+      "diagnostic_RB": 23,
+      "RB_removed": 0,
+      "RB_added": 0,
+      "baseline_events": 20,
+      "diagnostic_events": 20
+    },
+    {
+      "group": "a09",
+      "baseline_q99": 142.31973731428096,
+      "diagnostic_q99": 134.22574527986922,
+      "baseline_R": 28,
+      "diagnostic_R": 28,
+      "R_removed": 1,
+      "R_added": 1,
+      "B": 193,
+      "baseline_RB": 19,
+      "diagnostic_RB": 19,
+      "RB_removed": 0,
+      "RB_added": 0,
+      "baseline_events": 16,
+      "diagnostic_events": 16
+    },
+    {
+      "group": "a10",
+      "baseline_q99": 63.73915163580803,
+      "diagnostic_q99": 63.73915163580803,
+      "baseline_R": 31,
+      "diagnostic_R": 31,
+      "R_removed": 0,
+      "R_added": 0,
+      "B": 178,
+      "baseline_RB": 16,
+      "diagnostic_RB": 16,
+      "RB_removed": 0,
+      "RB_added": 0,
+      "baseline_events": 13,
+      "diagnostic_events": 13
+    },
+    {
+      "group": "a11",
+      "baseline_q99": 51.282290152974596,
+      "diagnostic_q99": 50.82571028241398,
+      "baseline_R": 74,
+      "diagnostic_R": 74,
+      "R_removed": 1,
+      "R_added": 1,
+      "B": 211,
+      "baseline_RB": 63,
+      "diagnostic_RB": 62,
+      "RB_removed": 1,
+      "RB_added": 0,
+      "baseline_events": 22,
+      "diagnostic_events": 21
+    },
+    {
+      "group": "a12",
+      "baseline_q99": 188.86032016301496,
+      "diagnostic_q99": 188.86032016301496,
+      "baseline_R": 74,
+      "diagnostic_R": 74,
+      "R_removed": 0,
+      "R_added": 0,
+      "B": 195,
+      "baseline_RB": 54,
+      "diagnostic_RB": 54,
+      "RB_removed": 0,
+      "RB_added": 0,
+      "baseline_events": 14,
+      "diagnostic_events": 14
+    },
+    {
+      "group": "a13",
+      "baseline_q99": 61.378822068064395,
+      "diagnostic_q99": 61.378822068064395,
+      "baseline_R": 74,
+      "diagnostic_R": 74,
+      "R_removed": 0,
+      "R_added": 0,
+      "B": 214,
+      "baseline_RB": 58,
+      "diagnostic_RB": 58,
+      "RB_removed": 0,
+      "RB_added": 0,
+      "baseline_events": 16,
+      "diagnostic_events": 16
+    },
+    {
+      "group": "a14",
+      "baseline_q99": 61.37882206805558,
+      "diagnostic_q99": 61.37882206805558,
+      "baseline_R": 71,
+      "diagnostic_R": 71,
+      "R_removed": 0,
+      "R_added": 0,
+      "B": 210,
+      "baseline_RB": 62,
+      "diagnostic_RB": 62,
+      "RB_removed": 0,
+      "RB_added": 0,
+      "baseline_events": 20,
+      "diagnostic_events": 20
+    },
+    {
+      "group": "a15",
+      "baseline_q99": 100.83598902892115,
+      "diagnostic_q99": 100.83598902892115,
+      "baseline_R": 70,
+      "diagnostic_R": 70,
+      "R_removed": 0,
+      "R_added": 0,
+      "B": 216,
+      "baseline_RB": 59,
+      "diagnostic_RB": 59,
+      "RB_removed": 0,
+      "RB_added": 0,
+      "baseline_events": 18,
+      "diagnostic_events": 18
+    },
+    {
+      "group": "a16",
+      "baseline_q99": 96.11456657744733,
+      "diagnostic_q99": 96.11456657744733,
+      "baseline_R": 74,
+      "diagnostic_R": 74,
+      "R_removed": 0,
+      "R_added": 0,
+      "B": 213,
+      "baseline_RB": 59,
+      "diagnostic_RB": 59,
+      "RB_removed": 0,
+      "RB_added": 0,
+      "baseline_events": 19,
+      "diagnostic_events": 19
+    }
+  ],
+  "temporal": [
+    {
+      "delta": 0,
+      "baseline_ticks": 682,
+      "diagnostic_ticks": 550,
+      "baseline_events": 285,
+      "diagnostic_events": 277,
+      "retained_ticks": 548,
+      "removed_ticks": 134,
+      "added_ticks": 2
+    },
+    {
+      "delta": 10,
+      "baseline_ticks": 989,
+      "diagnostic_ticks": 848,
+      "baseline_events": 292,
+      "diagnostic_events": 289,
+      "retained_ticks": 845,
+      "removed_ticks": 144,
+      "added_ticks": 3
+    },
+    {
+      "delta": 30,
+      "baseline_ticks": 1576,
+      "diagnostic_ticks": 1432,
+      "baseline_events": 295,
+      "diagnostic_events": 295,
+      "retained_ticks": 1424,
+      "removed_ticks": 152,
+      "added_ticks": 8
+    },
+    {
+      "delta": 60,
+      "baseline_ticks": 2472,
+      "diagnostic_ticks": 2329,
+      "baseline_events": 287,
+      "diagnostic_events": 288,
+      "retained_ticks": 2312,
+      "removed_ticks": 160,
+      "added_ticks": 17
+    }
+  ],
+  "independent_audit": {
+    "group_vectors": 46080,
+    "R_B_scores_and_decisions": 46080,
+    "temporal_occurrences_and_witness_times": 184320,
+    "R_evidence": 899,
+    "event_intervals_ids_and_witness_unions": 1159,
+    "IF_support_and_outside_E": 46080,
+    "B1_positive_host_states": 14341
+  },
+  "equally_long_baseline_events": [
+    {
+      "group": "a12",
+      "start": "2022-01-18T12:24:40Z"
+    },
+    {
+      "group": "a13",
+      "start": "2022-01-18T12:24:40Z"
+    },
+    {
+      "group": "a14",
+      "start": "2022-01-18T12:24:40Z"
+    },
+    {
+      "group": "a15",
+      "start": "2022-01-18T12:24:40Z"
+    },
+    {
+      "group": "a16",
+      "start": "2022-01-18T12:24:40Z"
+    },
+    {
+      "group": "a02",
+      "start": "2022-01-18T12:25:40Z"
+    }
+  ],
+  "longest_baseline_event": {
+    "id": "9eb62a3e1ae0b045f1a303f27e67d278b312e123dd93cfa37a23cf22e1526d4c",
+    "group": "a02",
+    "start": "2022-01-18T12:25:40Z",
+    "last": "2022-01-18T12:30:50Z",
+    "ticks": 32,
+    "duration_seconds": 320,
+    "diagnostic_positive_times": [
+      "2022-01-18T12:30:40Z"
+    ],
+    "overlapping_diagnostic_events": [
+      {
+        "start": "2022-01-18T12:30:40Z",
+        "last": "2022-01-18T12:30:40Z",
+        "ticks": 1
+      }
+    ],
+    "diagnostic_R_ticks": 1,
+    "diagnostic_RB_ticks": 1,
+    "diagnostic_R_score_range": [
+      6.831569941615973,
+      77.56614144846618
+    ],
+    "diagnostic_threshold": 62.39014438718597
+  }
+}

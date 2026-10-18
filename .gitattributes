@@ -10,3 +10,5 @@ docs/group-runtime-v1/d2/*.json text eol=lf
 docs/group-runtime-v1/d2/*.ndjson text eol=lf
 docs/group-runtime-v1/d2/*.csv text eol=lf
 docs/group-runtime-v1/d2/figures/*.svg text eol=lf
+docs/group-runtime-review-v1/*.json text eol=lf
+docs/group-runtime-review-v1/*.csv text eol=lf

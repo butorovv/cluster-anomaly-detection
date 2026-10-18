@@ -141,7 +141,14 @@ func (h *Hardware) Evaluate(hosts []string, records map[string]domain.TelemetryR
 					continue
 				}
 				applicable++
-				ev := DeviceEvidence{Hostname: host, BoundID: b.ID, Sensor: b.Sensor, Lower: b.Lower, Upper: b.Upper}
+				ev := DeviceEvidence{Hostname: host, BoundID: b.ID, Sensor: b.Sensor}
+				// Evidence belongs to the caller; never expose the registry's pointers.
+				if b.Lower != nil {
+					ev.Lower = ptr(*b.Lower)
+				}
+				if b.Upper != nil {
+					ev.Upper = ptr(*b.Upper)
+				}
 				v := features[idx[b.Sensor]]
 				if r.AvailabilityMask&(1<<idx[b.Sensor]) == 0 || math.IsNaN(v) || math.IsInf(v, 0) {
 					ev.State = Unknown

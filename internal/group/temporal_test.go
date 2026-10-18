@@ -145,3 +145,62 @@ func TestFullYBEventRetainsDistinctHardwareHosts(t *testing.T) {
 		t.Fatal(es, err)
 	}
 }
+
+func TestFlushMissingTailAndTerminalBoundary(t *testing.T) {
+	start := time.Date(2022, 1, 18, 8, 0, 0, 0, time.UTC)
+	e, _ := NewEngine("cfg", "a01", 60, start)
+	e.Step(temporalRaw(start, Positive, Unknown, Positive))
+	if _, err := e.Flush(start.Add(15 * time.Second)); err == nil {
+		t.Fatal("off-grid end accepted")
+	}
+	events, err := e.Flush(start.Add(30 * time.Second))
+	if err != nil || len(events) != 1 {
+		t.Fatal(events, err)
+	}
+	if events[0].Closed != start.Add(10*time.Second) || !events[0].CensoredMissing || events[0].CensoredWindow || events[0].DurationSeconds != 10 {
+		t.Fatalf("missing tail reported as observed until window end: %+v", events[0])
+	}
+	if _, _, err := e.Step(temporalRaw(start.Add(10*time.Second), Negative, Unknown, Positive)); err == nil {
+		t.Fatal("post-flush tick reused previous split's TTL")
+	}
+	if again, err := e.Flush(start.Add(30 * time.Second)); err != nil || len(again) != 0 {
+		t.Fatal("terminal flush must not duplicate events", again, err)
+	}
+}
+
+func TestAllTTLBoundariesAndReplayIDs(t *testing.T) {
+	start := time.Date(2022, 1, 18, 8, 0, 0, 0, time.UTC)
+	for _, delta := range []int{0, 10, 30, 60} {
+		replay := func(zone *time.Location) Event {
+			e, err := NewEngine("cfg", "a01", delta, start.In(zone))
+			if err != nil {
+				t.Fatal(err)
+			}
+			for seconds := 0; seconds <= delta; seconds += 10 {
+				r, b := Negative, Negative
+				if seconds == 0 {
+					r = Positive
+				}
+				if seconds == delta {
+					b = Positive
+				}
+				tr, _, err := e.Step(temporalRaw(start.Add(time.Duration(seconds)*time.Second).In(zone), r, Unknown, b))
+				if err != nil || (tr.Candidate == Positive) != (seconds == delta) {
+					t.Fatalf("delta=%d seconds=%d: %+v %v", delta, seconds, tr, err)
+				}
+			}
+			tr, events, err := e.Step(temporalRaw(start.Add(time.Duration(delta+10)*time.Second).In(zone), Negative, Unknown, Negative))
+			if err != nil || tr.Candidate != Negative || len(events) != 1 {
+				t.Fatal(delta, tr, events, err)
+			}
+			if events[0].DelaySeconds != delta || events[0].PositiveTicks != 1 || events[0].DurationSeconds != 10 {
+				t.Fatal(delta, events[0])
+			}
+			return events[0]
+		}
+		utc := replay(time.UTC)
+		if zoned := replay(time.FixedZone("UTC+3", 3*3600)); zoned.ID != utc.ID {
+			t.Fatalf("same event changed ID with timestamp representation: %s != %s", zoned.ID, utc.ID)
+		}
+	}
+}

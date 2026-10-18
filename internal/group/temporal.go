@@ -20,6 +20,7 @@ type Engine struct {
 	split, last   time.Time
 	states        [3]occurrenceState // R,Y,B; constant bounded memory
 	open          *Event
+	finished      bool
 }
 
 func NewEngine(configID, group string, deltaSeconds int, splitStart time.Time) (*Engine, error) {
@@ -83,7 +84,7 @@ func (e *Engine) close(t time.Time, missing, window bool) []Event {
 }
 func (e *Engine) Step(raw Raw) (TemporalResult, []Event, error) {
 	t := raw.Timestamp
-	if raw.Group != e.group || t.IsZero() || t.Before(e.split) || !t.Equal(t.Truncate(10*time.Second)) || (!e.last.IsZero() && !t.After(e.last)) {
+	if e.finished || raw.Group != e.group || t.IsZero() || t.Before(e.split) || !t.Equal(t.Truncate(10*time.Second)) || (!e.last.IsZero() && !t.After(e.last)) {
 		return TemporalResult{}, nil, fmt.Errorf("invalid identity, duplicate or unordered tick")
 	}
 	states := []State{raw.R.State, raw.Y.State, raw.B.State}
@@ -229,9 +230,21 @@ func unique(xs []string) []string {
 	}
 	return o
 }
+
+// Flush seals the split at an exclusive grid boundary. A missing tail closes
+// at the first unobserved cell. Further Step calls require a new Engine.
 func (e *Engine) Flush(end time.Time) ([]Event, error) {
-	if end.IsZero() || (!e.last.IsZero() && !end.After(e.last)) {
-		return nil, fmt.Errorf("flush must follow last tick")
+	if end.IsZero() || end.Before(e.split) || !end.Equal(end.Truncate(10*time.Second)) || (!e.last.IsZero() && !end.After(e.last)) {
+		return nil, fmt.Errorf("flush must be on grid and follow last tick within split")
+	}
+	if e.finished {
+		return nil, nil
+	}
+	e.finished = true
+	e.states = [3]occurrenceState{}
+	if !e.last.IsZero() && end.After(e.last.Add(10*time.Second)) {
+		// Unobserved tail cells are missing, just like a gap inside Step.
+		return e.close(e.last.Add(10*time.Second), true, false), nil
 	}
 	return e.close(end, false, true), nil
 }

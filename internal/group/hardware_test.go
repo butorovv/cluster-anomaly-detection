@@ -108,3 +108,21 @@ func TestHardwareEqualityAndDistinctHostVoting(t *testing.T) {
 		t.Fatalf("empty bounds must be unknown: %s", got.State)
 	}
 }
+
+func TestHardwareEvidenceCannotMutateApprovedLimits(t *testing.T) {
+	h, err := NewHardware([]Bound{boundFor("a01n01", "gpu0_power", "DC", "W", 0, 100)})
+	if err != nil {
+		t.Fatal(err)
+	}
+	records := map[string]domain.TelemetryRecord{"a01n01": recordWithFeature("a01n01", 1, 101)}
+	first := h.Evaluate([]string{"a01n01", "a01n02"}, records)
+	if len(first.Evidence) != 1 || first.Hosts["a01n01"] != Positive {
+		t.Fatal(first)
+	}
+	*first.Evidence[0].Upper = 1000
+	*first.Evidence[0].Lower = -1000
+	second := h.Evaluate([]string{"a01n01", "a01n02"}, records)
+	if second.Hosts["a01n01"] != Positive || *second.Evidence[0].Upper != 100 || *second.Evidence[0].Lower != 0 {
+		t.Fatalf("returned evidence mutated approved limits: %+v", second)
+	}
+}
