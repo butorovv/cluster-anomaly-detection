@@ -10,10 +10,10 @@ clean = Path(__file__).resolve().parents[2]
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--export', type=Path, default=Path('results/context-v1'))
 args = parser.parse_args()
-sys.path.insert(0, str(clean / 'tools/context'))
-from analyze import load_window, METHODS, FOUR
-from context_stats import calibrate, physical, physical_thresholds, select_events, joint_events, linear_runs
-import diagnostic_stats
+sys.path.insert(0, str(clean))
+from tools.context.analyze import load_window, METHODS, FOUR
+from tools.context.context_stats import calibrate, physical, physical_thresholds, select_events, joint_events, linear_runs
+from tools.diagnostics import diagnostic_stats
 assert Path(diagnostic_stats.__file__).resolve() == clean / 'tools/diagnostics/diagnostic_stats.py'
 export = args.export.resolve()
 meta = json.loads((export / 'metadata.json').read_text())

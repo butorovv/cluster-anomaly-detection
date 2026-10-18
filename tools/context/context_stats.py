@@ -4,11 +4,8 @@ from pathlib import Path
 import numpy as np
 
 ROOT = Path(__file__).resolve().parents[2]
-DEPENDENCY = ROOT / 'tools/diagnostics'
-if not (DEPENDENCY / 'diagnostic_stats.py').is_file():
-    raise RuntimeError('Tracked research 4.1 modules are required; see README')
-sys.path.insert(0, str(DEPENDENCY))
-from diagnostic_stats import linear_runs, empirical_tail, holm, coincidence_metrics
+sys.path.insert(0, str(ROOT))
+from tools.diagnostics.diagnostic_stats import linear_runs, empirical_tail, holm, coincidence_metrics
 
 
 def quantile(x, q=.99, axis=None):
