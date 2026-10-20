@@ -1,0 +1,22 @@
+{
+  "status": "PASS",
+  "control_profiles": 320,
+  "control_D2_group_ticks": 921600,
+  "reference": "full sorting, direct NumPy covariance/mean and pinv; no inference recalibration",
+  "binary_counts_and_event_counts": "all exact per group/seed",
+  "maximum_absolute_errors": {
+    "host_median": 0,
+    "host_mad": 0,
+    "host_scale": 0,
+    "r_q99": 0,
+    "median": 0,
+    "scale": 0,
+    "center": 1.7763568394002505e-14,
+    "covariance": 8.526512829121202e-13,
+    "inverse": 6.750155989720952e-14,
+    "b_q99": 4.249045559845399e-12
+  },
+  "rtol": 1e-08,
+  "atol": 1e-08,
+  "protocol_sha256": "2c62b356dcb2fafa4b4ee97f1817faedba0e54a89914db1c5ac3ed984f8a7795"
+}

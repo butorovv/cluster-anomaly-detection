@@ -1,0 +1,7 @@
+scenario,groups,altered_group_ticks,R_positive_ticks,B_positive_ticks,baseline_RB_ticks,perturbed_RB_ticks,new_RB_ticks,removed_RB_ticks,first_new_delay_seconds,unknown_ticks,all_D2_events,outside_new_RB_ticks,maximum_R_witness_hosts,maximum_R_ratio,maximum_B_ratio
+A,a04,12,0,12,0,0,0,0,,0,285,0,1,0.48204216593645705,10.464222714209047
+B,a04,12,0,12,0,0,0,0,,0,285,0,1,0.5179421840395291,23.940225595317738
+C,a04,12,0,12,0,0,0,0,,0,285,0,1,0.77948712079953,51.969552044412474
+D,a04,12,11,12,0,11,11,0,0,0,287,0,2,1.5435896653395433,13.68564429041337
+E,"a04,a05,a06",36,0,10,0,0,0,0,,0,285,0,1,0.9623288368003581,2.159655815424724
+F,a02,4,0,0,4,0,0,4,,4,287,0,0,,

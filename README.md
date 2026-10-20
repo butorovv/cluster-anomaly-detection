@@ -1,19 +1,33 @@
 # Cluster Anomaly Detection
 
-Начальный этап КР «Программная система выявления групповых аномалий в вычислительных
-кластерах»: offline Summit → F18 D1/D2/D3 → PostgreSQL и Go Telemetry Replayer.
-Offline-ядра Mahalanobis, компонентной физической модели и Isolation Forest
-реализованы ниже; Worker, Master, Kafka, HTTP/GUI пока не реализованы.
+Проект НИР/КР «Программная система выявления групповых аномалий в вычислительных
+кластерах»: offline Summit → F18 → локальный B1 и групповой Go R/B/Y runtime.
+Есть PostgreSQL/Telemetry Replayer, Mahalanobis, компонентная физическая модель
+и Isolation Forest; Worker, Master, Kafka, HTTP/GUI пока не реализованы.
 
 **Текущий статус:** реальный Summit D1 (`20220118.parquet`, ClusterWise) скачан,
 SHA256 и PyArrow проверены. Подготовлены 2 488 320 F18 states для 16×18 узлов,
 в `cluster_anomaly_dev` импортированы все 44 789 760 измерений суток без дубликатов.
 Go Replayer проверен на каждой реальной записи; Python/Go tests, build и vet прошли.
-Группы a01–a16 предварительные, timezone UTC — явное непроверенное допущение.
-Для дальнейших расчётов утверждено разбиение этого же дня на D1/D2/D3 по 8 часов;
+Группы a01–a16 следуют документированному source hostname encoding;
+fault domains питания/охлаждения независимо не подтверждены. Timezone UTC —
+явное непроверенное допущение.
+Для дальнейших расчётов используется разбиение этого же дня на D1/D2/D3 по 8 часов;
 описания прежнего трёхдневного workflow ниже сохраняются как история Builder.
 Размеры, SHA256 и полнота локальной выборки сохраняются в prepared manifest;
 команды и resume: [D1 pilot](docs/summit-D1-pilot.md).
+
+**Актуальный групповой прототип:** `summit-group-research-v1`, R/B 10D,
+Y=unknown, preliminary events и причинный δ=0/10/30/60 s. На D2 baseline
+899 R+, 3260 B+, 682 R&B и 285 событий; это статистические события, не отказы.
+[Go CLI](docs/group-detection-runtime.md), [результаты PR №10](docs/group-detection-real-d2-results.md).
+
+**Этап 3:** [зарегистрированный протокол](docs/group-validation-protocol-v1.md),
+[научное заключение](docs/nir-group-model-scientific-summary.md),
+[записка для руководителя](docs/nir-supervisor-decision-brief.md),
+[проект distributed-контракта КР](docs/kr-distributed-detector-contract.md).
+20 D1-refitted перестановок и artificial probes — дополнительные разведочные
+исследования уже изученного D2, без изменения исходного детектора.
 
 ## Математическое ядро НИР
 
@@ -80,7 +94,7 @@ go test -v ./internal/experiment -run TestRealPreparedDayWindows -count=1
 46 080 TimestampComplete без пересечений. Невыставленная переменная означает
 SKIP, а явно выбранный недоступный файл — FAIL. Проверка шести снимков остаётся
 отдельной от полного обучения D1. Этапы B/C и калибровка IF на D2 реализованы;
-итоговые испытания и топологическая агрегация относятся к следующим мини-ТЗ.
+текущий групповой runtime и дополнительные исследования описаны выше.
 
 ## Isolation Forest — мини-ТЗ №3
 
@@ -88,7 +102,7 @@ SKIP, а явно выбранный недоступный файл — FAIL. �
 [архив результатов](docs/research-4.3/02-model-comparison.md),
 [актуальные инструкции воспроизведения](tools/research43/README.md).
 H2 не рекомендован основным алгоритмом; отрицательные результаты сохранены.
-Действующая локальная основа — B1; групповой детектор этой интеграцией не реализован.
+Действующая локальная основа — B1; текущий групповой runtime описан отдельно выше.
 
 **Текущий локальный runtime B1 (17.10.2026):** один сохранённый IF с
 индивидуальными Q0.99-порогами каждого hostname, вычисленными только по D1.
@@ -98,7 +112,7 @@ H2 не рекомендован основным алгоритмом; отри
 Старые калибровки ниже сохраняются как история исследований.
 
 Контракт, воспроизведение и отдельная реальная регрессия:
-[local B1](docs/local-b1.md). Групповой алгоритм пока описан предложением:
+[local B1](docs/local-b1.md). Групповой алгоритм исполняется в `cmd/group`:
 [математическая спецификация](docs/group-detection-mathematical-spec.md),
 [паспортный эталон](docs/summit-hardware-reference.md),
 [протокол оценки](docs/group-detection-evaluation-protocol.md),
@@ -152,10 +166,12 @@ IF-срабатываний, audit D2 и SHA-256 датасета/исходны
 
 ```text
 cmd/replayer                  entrypoint
+cmd/local, cmd/group          локальный и групповой offline runtime
 cmd/worker, cmd/master         placeholders будущих приложений
 internal/app                  composition root, config, slog, lifecycle
 internal/modules/telemetry    domain, usecase ports, pgx repository
 internal/replayer             reader, scheduler, sender/completion ports
+internal/local, internal/group frozen B1; групповые профили, критерии и события
 internal/platform             config, logger, postgres pool
 db/migrations                 канонический V1 + пять metric_type
 db/demo                       optional учебные данные отдельно
