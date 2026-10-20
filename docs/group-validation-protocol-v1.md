@@ -129,5 +129,5 @@ baseline не засчитывается новым обнаружением. О
 Полные profiles/scores/NDJSON/CSV новых прогонов — отдельный ignored `results/`.
 Run manifest: protocol commit/SHA, code commit/dirty state, версии зависимостей,
 команды, seeds, input/output hashes и измеренное время. Финальные документы:
-научная модель НИР, brief для Панилова и проект distributed-контракта КР.
+научная модель НИР, записка для научного руководителя и проект distributed-контракта КР.
 Kafka/Worker/Master/HTTP/GUI не реализуются. Согласование руководителя не заявляется.
