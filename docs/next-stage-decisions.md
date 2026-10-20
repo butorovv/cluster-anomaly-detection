@@ -41,7 +41,7 @@ zero-MAD host scales R. До согласования этапы IV–X не н�
 | Missing data | R/B только при всех 18 полных F18 | Консервативно; будущие partial-composition profiles — отдельная работа |
 | Evaluation | D1 fit, D2 research; D3 retrospective, frozen settings | Новый unused day предпочтителен; без labels нет fault F1 |
 
-## Вопросы П. А. Панилову
+## Вопросы для согласования
 
 1. Разрешить ли исследовательский degraded R+B при неизвестном Y, или сохранять
    только preliminary signals до получения аппаратных sensor bounds?
