@@ -20,8 +20,9 @@ FEATURES = (
 )
 FULL_MASK = (1 << len(FEATURES)) - 1
 BATCH_SIZE = 8192
-BUILDER_VERSION = "1.0.0"
+BUILDER_VERSION = "1.1.0"
 SCHEMA_VERSION = "F18-v1"
+MANIFEST_VERSION = "dataset-manifest-v2"
 EPOCH = datetime(1970, 1, 1, tzinfo=timezone.utc)
 PREPARED_SCHEMA = pa.schema([
     pa.field("timestamp", pa.timestamp("us", tz="UTC"), nullable=False),
@@ -156,6 +157,28 @@ def raw_columns(mapping):
     for raw in mapping["features"].values():
         names.extend(raw if isinstance(raw, list) else [raw])
     return names
+
+
+def availability_metrics(rows, valid, missing, expected):
+    """Missing feature positions include nulls only among observed rows.
+
+    Expected samples refer to the entire UTC day(s), including edge gaps.
+    An absent sample contributes all 18 positions to total unavailability.
+    No observed rows means an undefined conditional feature fraction (None).
+    """
+    if not (expected > 0 and 0 <= valid <= rows <= expected
+            and rows - valid <= missing <= (rows - valid) * len(FEATURES)):
+        raise ValueError('Inconsistent availability counts')
+    absent = expected - rows
+    unavailable = absent * len(FEATURES) + missing
+    return {
+        'expected_samples': expected, 'rows': rows, 'valid': valid, 'invalid': rows-valid,
+        'missing_samples': absent, 'missing_feature_positions_observed': missing,
+        'total_unavailable_feature_positions': unavailable,
+        'sample_coverage': rows / expected, 'complete_f18_coverage': valid / expected,
+        'feature_missing_fraction_observed': missing / (rows * len(FEATURES)) if rows else None,
+        'total_feature_unavailability_fraction': unavailable / (expected * len(FEATURES)),
+    }
 
 
 @dataclass

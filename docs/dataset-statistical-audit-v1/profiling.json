@@ -1,0 +1,31 @@
+{
+  "scope": "Whole benchmark process, includes source checksum and post-fit decision parity; cumulative costs overlap",
+  "go_version": "go version go1.27.2 windows/amd64",
+  "profiles": [
+    {
+      "command": [
+        "go",
+        "tool",
+        "pprof",
+        "-top",
+        "-nodecount=15",
+        ".cache/statistical-audit.test.exe",
+        ".cache/statistical-fit.cpu"
+      ],
+      "output": "File: statistical-audit.test.exe\nBuild ID: C:\\study\\NIR_KP_6_SEM\\NIR_KR_7_SEM\\cluster-anomaly-detection\\.cache\\statistical-audit.test.exe2026-10-20 16:51:41.0516443 +0300 MSK\nType: cpu\nTime: 2026-10-20 16:54:39 MSK\nDuration: 9.12s, Total samples = 9460ms (103.71%)\nShowing nodes accounting for 4300ms, 45.45% of 9460ms total\nDropped 230 nodes (cum <= 47.30ms)\nShowing top 15 nodes out of 187\n      flat  flat%   sum%        cum   cum%\n     790ms  8.35%  8.35%     1120ms 11.84%  github.com/parquet-go/parquet-go.reconstructFuncOfLeaf.func1\n     490ms  5.18% 13.53%      620ms  6.55%  slices.partitionOrdered[go.shape.float64]\n     480ms  5.07% 18.60%     1390ms 14.69%  github.com/parquet-go/parquet-go.(*rowGroupRows).ReadRows\n     440ms  4.65% 23.26%      810ms  8.56%  cluster-anomaly-detection/internal/analysis.(*StatisticalProfile).DistanceSquared\n     310ms  3.28% 26.53%      490ms  5.18%  runtime.mallocgcTinySC2\n     300ms  3.17% 29.70%      300ms  3.17%  runtime.cgocall\n     230ms  2.43% 32.14%     2780ms 29.39%  github.com/parquet-go/parquet-go.reconstructFuncOfGroup.func1\n     190ms  2.01% 34.14%     6000ms 63.42%  cluster-anomaly-detection/internal/replayer.(*ParquetReader).Next\n     180ms  1.90% 36.05%     6230ms 65.86%  cluster-anomaly-detection/internal/replayer.(*WindowReader).Next\n     170ms  1.80% 37.84%      180ms  1.90%  cmp.Less[go.shape.float64] (inline)\n     170ms  1.80% 39.64%      170ms  1.80%  runtime.memmove\n     150ms  1.59% 41.23%      150ms  1.59%  runtime.sysUnusedOS\n     140ms  1.48% 42.71%     1090ms 11.52%  cluster-anomaly-detection/internal/replayer.preparedRow.record\n     130ms  1.37% 44.08%      130ms  1.37%  github.com/parquet-go/parquet-go.dictionaryLookup64\n     130ms  1.37% 45.45%      130ms  1.37%  math.Float64bits (inline)\n"
+    },
+    {
+      "command": [
+        "go",
+        "tool",
+        "pprof",
+        "-top",
+        "-alloc_space",
+        "-nodecount=10",
+        ".cache/statistical-audit.test.exe",
+        ".cache/statistical-fit.mem"
+      ],
+      "output": "File: statistical-audit.test.exe\nBuild ID: C:\\study\\NIR_KP_6_SEM\\NIR_KR_7_SEM\\cluster-anomaly-detection\\.cache\\statistical-audit.test.exe2026-10-20 16:51:41.0516443 +0300 MSK\nType: alloc_space\nTime: 2026-10-20 16:54:48 MSK\nShowing nodes accounting for 1718.56MB, 96.04% of 1789.51MB total\nDropped 79 nodes (cum <= 8.95MB)\nShowing top 10 nodes out of 55\n      flat  flat%   sum%        cum   cum%\n  573.45MB 32.04% 32.04%   573.45MB 32.04%  cluster-anomaly-detection/internal/analysis.FitStatistical.func1\n  444.51MB 24.84% 56.88%   444.51MB 24.84%  reflect.unsafe_New\n  216.51MB 12.10% 68.98%   217.01MB 12.13%  regexp.(*Regexp).doOnePass\n  186.01MB 10.39% 79.38%   403.02MB 22.52%  regexp.(*Regexp).FindStringSubmatch\n  107.74MB  6.02% 85.40%   123.81MB  6.92%  github.com/parquet-go/parquet-go.(*Column).decodeDictionary\n      53MB  2.96% 88.36%       53MB  2.96%  github.com/parquet-go/parquet-go.byteArrayType.AssignValue\n      44MB  2.46% 90.82%   488.53MB 27.30%  cluster-anomaly-detection/internal/modules/telemetry/domain.ParseHostname\n   41.50MB  2.32% 93.14%    41.50MB  2.32%  fmt.Sprintf\n   32.04MB  1.79% 94.93%    32.04MB  1.79%  github.com/parquet-go/parquet-go/internal/memory.newSlice[go.shape.uint8] (inline)\n   19.81MB  1.11% 96.04%    21.81MB  1.22%  github.com/parquet-go/parquet-go/encoding/thrift.Slice[go.shape.c60a4fb04ceb19647bc00ff40edcbfa96322c1268f9bc8b3754f693e37eb75e5].DecodeFunc.func1\n"
+    }
+  ]
+}
