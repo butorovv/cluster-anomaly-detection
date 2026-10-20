@@ -1,0 +1,78 @@
+{
+  "base_commit": "44be030f1b2bf254a576184e33776106f6ed3627",
+  "seed": 20261016,
+  "synthetic_only": true,
+  "host_ticks": 18432,
+  "interpretation": "One small synthetic run; not a full-day disk capacity estimate or performance superiority test",
+  "byte_identical": true,
+  "results": {
+    "baseline": {
+      "seconds": 0.21991759999946225,
+      "sqlite_peak_bytes_at_guard": 1482752,
+      "parquet_bytes": 268122,
+      "parquet_sha256": "c16a086fb8235f627cd2e359d1597e896d3a4436d3ab9cf0d6af1cfbb5068390",
+      "guard_calls": 6,
+      "legacy_stats": {
+        "rows": 18432,
+        "valid": 12497,
+        "invalid": 5935,
+        "missing_features": {
+          "psu0_power": 360,
+          "psu1_power": 359,
+          "cpu0_power": 359,
+          "cpu1_power": 359,
+          "gpu0_power": 359,
+          "gpu1_power": 359,
+          "gpu2_power": 360,
+          "gpu3_power": 360,
+          "gpu4_power": 360,
+          "gpu5_power": 360,
+          "cpu0_mean_temp": 360,
+          "cpu1_mean_temp": 360,
+          "gpu0_core_temp": 360,
+          "gpu1_core_temp": 360,
+          "gpu2_core_temp": 360,
+          "gpu3_core_temp": 360,
+          "gpu4_core_temp": 360,
+          "gpu5_core_temp": 360
+        },
+        "missing_samples": 2469888,
+        "coverage": 0.007407407407407408
+      }
+    },
+    "candidate": {
+      "seconds": 0.2274340999974811,
+      "sqlite_peak_bytes_at_guard": 1482752,
+      "parquet_bytes": 268122,
+      "parquet_sha256": "c16a086fb8235f627cd2e359d1597e896d3a4436d3ab9cf0d6af1cfbb5068390",
+      "guard_calls": 12,
+      "legacy_stats": {
+        "rows": 18432,
+        "valid": 12497,
+        "invalid": 5935,
+        "missing_features": {
+          "psu0_power": 360,
+          "psu1_power": 359,
+          "cpu0_power": 359,
+          "cpu1_power": 359,
+          "gpu0_power": 359,
+          "gpu1_power": 359,
+          "gpu2_power": 360,
+          "gpu3_power": 360,
+          "gpu4_power": 360,
+          "gpu5_power": 360,
+          "cpu0_mean_temp": 360,
+          "cpu1_mean_temp": 360,
+          "gpu0_core_temp": 360,
+          "gpu1_core_temp": 360,
+          "gpu2_core_temp": 360,
+          "gpu3_core_temp": 360,
+          "gpu4_core_temp": 360,
+          "gpu5_core_temp": 360
+        },
+        "missing_samples": 2469888,
+        "coverage": 0.007407407407407408
+      }
+    }
+  }
+}

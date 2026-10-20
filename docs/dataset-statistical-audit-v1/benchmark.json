@@ -1,0 +1,24 @@
+{
+  "wall_seconds_including_verification": 18.54077839999809,
+  "peak_working_set_bytes": 350502912,
+  "io_counters": {
+    "read_ops": 52526,
+    "write_ops": 14,
+    "other_ops": 115,
+    "read_bytes": 355223793,
+    "write_bytes": 1200,
+    "other_bytes": 796994
+  },
+  "io_semantics": "Windows process transfer counters, include cached reads; not physical disk bytes",
+  "peak_semantics": "100ms sampled OS peak working set, includes both fits and parity verification",
+  "command": [
+    "C:\\study\\NIR_KP_6_SEM\\NIR_KR_7_SEM\\cluster-anomaly-detection\\.cache\\statistical-audit.test.exe",
+    "-test.run=^$",
+    "-test.bench=BenchmarkFitStatisticalAudit",
+    "-test.benchtime=1x",
+    "-test.benchmem",
+    "-test.v"
+  ],
+  "exit_code": 0,
+  "go_benchmark_output": "goos: windows\ngoarch: amd64\npkg: cluster-anomaly-detection/internal/experiment\ncpu: 12th Gen Intel(R) Core(TM) i7-12650H\nBenchmarkFitStatisticalAudit\nBenchmarkFitStatisticalAudit/sequence_sha256=false\n    statistical_audit_test.go:112: exact historical profile and decisions: states=829440 positives=8294 rank=18 Q99=77.704896906807022\nBenchmarkFitStatisticalAudit/sequence_sha256=false-16         \t       1\t6263145900 ns/op\t 358318080 F18-bytes/op\t  73217800 ns/Q99_validate\t   2001600 ns/covariance_SVD\t 704930100 ns/medianMAD\t1772119500 ns/pass1\t1831644100 ns/pass2_normalize_Welford\t1878567800 ns/pass3_distances\t   2488320 states/op\t1575923408 B/op\t62465966 allocs/op\nBenchmarkFitStatisticalAudit/sequence_sha256=true\n    statistical_audit_test.go:112: exact historical profile and decisions: states=829440 positives=8294 rank=18 Q99=77.704896906807022\nBenchmarkFitStatisticalAudit/sequence_sha256=true-16          \t       1\t6694177000 ns/op\t 358318080 F18-bytes/op\t  75607900 ns/Q99_validate\t    504700 ns/covariance_SVD\t 787406700 ns/medianMAD\t1826281900 ns/pass1\t1905193800 ns/pass2_normalize_Welford\t2102328200 ns/pass3_distances\t   2488320 states/op\t1576243312 B/op\t62465222 allocs/op\nPASS\n"
+}

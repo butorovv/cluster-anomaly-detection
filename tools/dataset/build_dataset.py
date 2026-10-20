@@ -15,13 +15,20 @@ import pyarrow.parquet as pq
 
 from common import (BATCH_SIZE, BUILDER_VERSION, FEATURES, FULL_MASK, PREPARED_SCHEMA,
                     SCHEMA_VERSION, file_hash, load_mapping, project_batch, raw_columns,
-                    scan_day, select_groups, validate_days, parse_hostname)
+                    scan_day, select_groups, validate_days, parse_hostname,
+                    availability_metrics, MANIFEST_VERSION)
 from disk_guard import guard
 
 
 def prepare_day(day, mapping, hosts, target, scratch, assumed_timezone=None):
+    if not hosts or len(set(hosts)) != len(hosts):
+        raise ValueError('Selected hosts must be non-empty and distinct')
+    for host in hosts:
+        parse_hostname(host)
     fields = PREPARED_SCHEMA.names
     db_path = scratch / "sort.sqlite"
+    guard(db_path, 256 * 1024**2)
+    guard(target, 256 * 1024**2)
     db = sqlite3.connect(db_path)
     try:
         db.execute("PRAGMA cache_size=-32768")
@@ -34,10 +41,11 @@ def prepare_day(day, mapping, hosts, target, scratch, assumed_timezone=None):
                    + ", PRIMARY KEY(timestamp,group_id,hostname)) WITHOUT ROWID")
         insert = "INSERT INTO states VALUES (" + ",".join("?" for _ in fields) + ")"
         pf = pq.ParquetFile(day.path)
-        host_set = pa.array(sorted(hosts))
+        host_set = pa.array(hosts)  # is_in is a membership test, not an ordered join.
         selected_missing = dict.fromkeys(FEATURES, 0)
         valid = rows = 0
         for batch in pf.iter_batches(batch_size=BATCH_SIZE, columns=raw_columns(mapping)):
+            guard(db_path, 256 * 1024**2)
             guard(target, 256 * 1024**2)
             table = pa.Table.from_batches([batch])
             table = table.filter(pc.is_in(table[mapping["hostname"]], value_set=host_set))
@@ -53,19 +61,29 @@ def prepare_day(day, mapping, hosts, target, scratch, assumed_timezone=None):
             for f in FEATURES:
                 selected_missing[f] += prepared[f].null_count
         cursor = db.execute("SELECT * FROM states ORDER BY timestamp,group_id,hostname")
+        guard(target)
         with pq.ParquetWriter(target, PREPARED_SCHEMA, compression="snappy") as writer:
             while batch_rows := cursor.fetchmany(BATCH_SIZE):
                 guard(target)
                 arrays = [pa.array([bool(v) for v in col] if pa.types.is_boolean(f.type) else col, type=f.type)
                           for col, f in zip(zip(*batch_rows), PREPARED_SCHEMA)]
                 writer.write_table(pa.Table.from_arrays(arrays, schema=PREPARED_SCHEMA))
-        return {"rows": rows, "valid": valid, "invalid": rows - valid,
-                "missing_features": selected_missing,
-                "missing_samples": len(hosts) * 8640 - rows,
-                "coverage": rows / (len(hosts) * 8640)}
+        return {**availability_metrics(rows, valid, sum(selected_missing.values()), len(hosts) * 8640),
+                "missing_features": selected_missing, "coverage": rows / (len(hosts) * 8640)}
     finally:
         db.close()
         db_path.unlink(missing_ok=True)
+
+
+def group_quality(eligible, days):
+    """Add explicit diagnostics without changing eligibility or ranking."""
+    result = []
+    for group, hosts, rows, missing in eligible:
+        valid = sum(day.hosts[host].valid for day in days for host in hosts)
+        metrics = availability_metrics(rows, valid, missing, len(days) * 18 * 8640)
+        result.append({'group_id': group, **metrics, 'coverage': metrics['sample_coverage'],
+                       'missing_fraction': metrics['feature_missing_fraction_observed']})
+    return result
 
 
 def build(paths, output, mapping_path, assumed_timezone=None, postgres=None, replace=False):
@@ -88,6 +106,7 @@ def build(paths, output, mapping_path, assumed_timezone=None, postgres=None, rep
     groups = [g[0] for g in selected]
     hosts = sorted(h for g in selected for h in g[1])
     output.mkdir(parents=True, exist_ok=True)
+    guard(output, 1024**3)
     existing = [output / f"D{i}.parquet" for i in range(1, 4)] + [output / "manifest.json"]
     if any(p.exists() for p in existing) and not replace:
         raise ValueError("Prepared output exists; use --replace-dataset for an intentional replacement")
@@ -116,8 +135,8 @@ def build(paths, output, mapping_path, assumed_timezone=None, postgres=None, rep
             "invalid_states": {k: s["invalid"] for k, s in stats.items()},
             "missingness_statistics": stats,
             "selection_rule": "complete 18 positions on all days; descending observed states, ascending F18 missing fraction, lexical group code",
-            "group_quality": [{"group_id": g, "coverage": r / (3 * 18 * 8640),
-                               "missing_fraction": m / (r * 18)} for g, _, r, m in eligible],
+            "group_quality": group_quality(eligible, days),
+            "manifest_version": MANIFEST_VERSION,
             "builder_version": BUILDER_VERSION, "schema_version": SCHEMA_VERSION,
             "build_timestamp": datetime.now(timezone.utc).isoformat(),
             "prepared_file_hashes": {f"D{i}.parquet": file_hash(scratch / f"D{i}.parquet") for i in range(1, 4)},
@@ -177,7 +196,8 @@ def build_pilot(path, output, mapping_path, assumed_timezone=None):
             'raw_rows': day.rows, 'raw_host_count': len(day.hosts),
             'raw_timestamp_min': day.timestamp_min, 'raw_timestamp_max': day.timestamp_max,
             'raw_missing_features': day.missing,
-            'group_quality': [{'group_id': g, 'coverage': r / (18*8640), 'missing_fraction': m/(r*18)} for g, _, r, m in eligible],
+            'group_quality': group_quality(eligible, [day]),
+            'manifest_version': MANIFEST_VERSION,
             'selection_rule': 'D1 only: complete 18 positions; descending observed states, ascending F18 missing fraction, lexical group',
             'builder_version': BUILDER_VERSION, 'schema_version': SCHEMA_VERSION,
             'build_timestamp': datetime.now(timezone.utc).isoformat(),
