@@ -4,6 +4,41 @@
 CLI — `cmd/group`. Результаты: [реальный D2 отчёт](group-detection-real-d2-results.md).
 Контракт: [математическая спецификация](group-detection-mathematical-spec.md).
 
+## API одной группы
+
+`group.EvaluateGroup` возвращает Raw одной группы без outside IF/E и без Step
+временного Engine. `group.Evaluate` остаётся offline-путём и добавляет прежний
+межгрупповой контекст. Численные функции и event segmentation не меняются.
+До `AnnotateOutside` outside counts сериализуются как null; Go int-поля этих
+counts не интерпретируются, пока `OutsideGroups == nil`.
+
+Для inference без исторического Parquet: `group.LoadBundle(BundleFiles)`.
+`ProfileSHA256` берётся из доверенного manifest запуска, а не вычисляется
+для принятия произвольного неизвестного профиля. Для пяти model/config assets
+задаются physical `Path` и прежний логический `InputKey` из `Profile.InputSHA`;
+`PreparedKey`/`ManifestKey` именуют два оставшихся source hashes. Все семь
+bindings обязательны. Loader проверяет bytes, метаданные и numerical validators,
+не обучает модели и не открывает telemetry. Models остаются private/immutable.
+`Bundle.OpenSource(input, manifest)` отдельно проверяет фактический replay source.
+
+`Bundle.RunID(groups, window)` и общий `group.RunID` сохраняют Go JSON v1 identity.
+Смена физических путей не меняет ID при сохранении исторических logical keys.
+Старый CLI продолжает применять свои проверки входов и прежние пути/опции.
+
+Opt-in тест нового API против полных pre-change offline outputs:
+
+```powershell
+$env:GROUP_REAL_ROOT='C:\path\to\existing-readonly-assets'
+$env:GROUP_REAL_REFERENCE='C:\path\to\pre-change-D2-output'
+go test -count=1 -v ./internal/group -run TestRealPerGroupD2Parity
+```
+
+Reference должен содержать `raw.ndjson`, `temporal.ndjson`, `events.ndjson`
+от прежнего CLI v1, D2/16 групп/всех четырёх δ. Тест сравнивает полные keyed
+payload и float64 точно на той же Go-среде, а не только итоговые counts.
+Отсутствие переменных даёт явный SKIP; недоступный указанный asset — FAIL.
+Вычисления не создают Worker/Kafka/HTTP и не меняют frozen-профили.
+
 ## Запуск
 
 Из корня репозитория, с существующими неизменными prepared/manifest,

@@ -121,11 +121,24 @@ Worker не пересчитывает его по своему подмноже
 неассоциативность float64 способна изменить strict-boundary решение.
 Нельзя усреднять только доступные 17 вместо 18 или интерполировать пропуск.
 
-Первый адаптер может собирать `group.Tick` для существующих Evaluate/Engine.
-Нынешний `Evaluate` и полный Profile рассчитаны на offline universe 4/8/16,
-а `AnnotateOutside` требует другие группы. Отдельный публичный per-group API
-для Worker пока **не реализован**; его извлечение — будущая инженерная задача
-с numerical parity, а не основание переписать математику сейчас.
+В PR №1 КР выделен `group.EvaluateGroup(*GroupProfile, Tick, *Hardware,
+*local.Detector, *Timing) (Raw, error)`: тот же порядок 18 хостов и вызовы R/B/Y/IF,
+без временного состояния и вне-группового контекста. Нужен заранее проверенный
+профиль; изменять модели/records во время вызова нельзя. Nil Timing допустим.
+Неполные F18 сохраняют unknown; некорректные inventory/grid/record identity
+отвергаются. Offline `Evaluate` вызывает это ядро для 4/8/16 групп и затем
+прежний `AnnotateOutside`. До annotation `OutsideGroups`, `OutsideS`, E равны nil;
+outside counts в JSON — null, а не фиктивный ноль. После annotation формат
+offline Raw сохраняется.
+
+`group.LoadBundle(BundleFiles)` загружает private frozen-модели без Parquet;
+обязателен доверенный ProfileSHA256. Physical Path и исторический InputKey
+разделены. Сохраняются все SHA/F18/inventory/normalizer/envelope проверки.
+`Bundle.EvaluateGroup` не раскрывает изменяемые профили, `Bundle.RunID` использует
+прежние logical keys. Фактический source отдельно проверяет `Bundle.OpenSource`
+по bytes SHA/manifest/topology/timezone. Loader не подтверждает наличие/полноту
+потока телеметрии. Kafka, assembler, Worker/Master и recovery остаются будущими
+этапами; [применение и parity-проверка](group-detection-runtime.md#api-одной-группы).
 
 ## 5. GroupResult и GroupEvent
 

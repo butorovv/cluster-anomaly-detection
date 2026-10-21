@@ -54,6 +54,12 @@ func OpenModels(input, manifest, statisticalPath, isolationPath string) (*Models
 	if err != nil {
 		return nil, fail(StatusIncompatibleModel, fmt.Errorf("prepared source: %w", err))
 	}
+	return openModelsForSource(s, statisticalPath, isolationPath)
+}
+
+// openModelsForSource shares all model-envelope and byte-binding checks between
+// the offline source path and the explicitly metadata-only frozen loader.
+func openModelsForSource(s *experiment.Source, statisticalPath, isolationPath string) (*Models, error) {
 	stat, err := experiment.LoadProfile(statisticalPath)
 	if err != nil {
 		return nil, fail(StatusCorruptProfile, fmt.Errorf("statistical profile: %w", err))
