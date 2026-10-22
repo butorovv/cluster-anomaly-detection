@@ -4,8 +4,6 @@ package main
 import (
 	"bufio"
 	"context"
-	"crypto/sha256"
-	"encoding/hex"
 	"encoding/json"
 	"flag"
 	"fmt"
@@ -114,25 +112,9 @@ func run(ctx context.Context) (err error) {
 	if err = os.Mkdir(*outputDir, 0755); err != nil {
 		return err
 	}
-	configBytes, err := os.ReadFile(*config)
+	contract, err := group.LoadConfig(*config)
 	if err != nil {
 		return err
-	}
-	var contract struct {
-		Version    string  `json:"version"`
-		Floor      float64 `json:"mad_floor"`
-		RCond      float64 `json:"svd_rcond"`
-		Dimensions int     `json:"dimensions"`
-		DDOF       int     `json:"covariance_ddof"`
-		Quantile   float64 `json:"quantile"`
-		Delta      []int   `json:"delta_seconds"`
-		Policy     string  `json:"y_unknown_policy"`
-	}
-	if err = json.Unmarshal(configBytes, &contract); err != nil {
-		return err
-	}
-	if contract.Version != group.Version || contract.Floor != group.Floor || contract.RCond != group.RCond || contract.Dimensions != 10 || contract.DDOF != 1 || contract.Quantile != .99 || contract.Policy != "preliminary_rb" || !reflect.DeepEqual(contract.Delta, []int{0, 10, 30, 60}) {
-		return fmt.Errorf("config differs from implemented frozen contract")
 	}
 	hashes := map[string]string{}
 	for _, path := range []string{*input, *manifest, *stat, *forest, *b1, *hardware, *config} {
@@ -185,9 +167,10 @@ func run(ctx context.Context) (err error) {
 		return err
 	}
 	w := analysis.NIRWindows()[split]
-	identity, _ := json.Marshal([]any{group.Version, profileSHA, hashes, *groups, w})
-	digest := sha256.Sum256(identity)
-	runID := hex.EncodeToString(digest[:])
+	runID, err := group.RunID(profileSHA, hashes, *groups, w)
+	if err != nil {
+		return err
+	}
 	events, err := openOutput(filepath.Join(*outputDir, "events.ndjson"))
 	if err != nil {
 		return err

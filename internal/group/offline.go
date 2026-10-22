@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"time"
 
 	"cluster-anomaly-detection/internal/analysis"
 	"cluster-anomaly-detection/internal/experiment"
@@ -124,79 +123,14 @@ func Evaluate(p *Profile, t Tick, hw *Hardware, ld *local.Detector, groups int, 
 	if groups != 4 && groups != 8 && groups != 16 {
 		return nil, fmt.Errorf("group count must be 4, 8, 16")
 	}
+	if p == nil || len(p.Groups) < groups {
+		return nil, fmt.Errorf("insufficient group profiles")
+	}
 	rows := make([]Raw, groups)
 	for gi := 0; gi < groups; gi++ {
-		g := &p.Groups[gi]
-		r := Raw{Timestamp: t.Timestamp, Group: g.Group, HostValues: map[string]HostVector{}}
-		var u [18]HostVector
-		started := time.Now()
-		for h, host := range g.Hosts {
-			record, ok := t.Records[host]
-			if !ok {
-				r.Missing = append(r.Missing, host)
-				continue
-			}
-			v, e := HostChannels(record)
-			if e != nil {
-				r.Missing = append(r.Missing, host)
-				continue
-			}
-			u[h] = v
-			r.HostValues[host] = v
-			r.Complete++
-		}
-		if r.Complete == 18 {
-			v, e := GroupVector(u)
-			if e != nil {
-				return nil, e
-			}
-			r.Vector = &v
-		}
-		timing.FeaturesSeconds += time.Since(started).Seconds()
-		started = time.Now()
-		if r.Vector == nil {
-			r.R = RResult{Criterion: Criterion{State: Unknown, Reason: "incomplete_group"}, Channel: -1}
-			if g.Observations > 0 {
-				r.R.Threshold = ptr(g.RThreshold)
-			}
-		} else {
-			r.R = g.R(u)
-		}
-		timing.RSeconds += time.Since(started).Seconds()
-		started = time.Now()
-		if r.Vector == nil {
-			r.B = Criterion{State: Unknown, Reason: "incomplete_group"}
-			if g.BThreshold != nil {
-				r.B.Threshold = ptr(*g.BThreshold)
-			}
-		} else {
-			r.B = g.B(*r.Vector)
-		}
-		timing.BSeconds += time.Since(started).Seconds()
-		started = time.Now()
-		r.Y = hw.Evaluate(g.Hosts, t.Records)
-		timing.YSeconds += time.Since(started).Seconds()
-		started = time.Now()
-		for _, host := range g.Hosts {
-			record, ok := t.Records[host]
-			lr := local.LocalResult{Timestamp: t.Timestamp, Hostname: host, GroupID: g.Group, DiagnosticStatus: "missing_observation"}
-			if ok {
-				lr = ld.Evaluate(record)
-			}
-			if lr.DiagnosticStatus == local.StatusScoringError {
-				return nil, fmt.Errorf("local score: %s", lr.Diagnostic)
-			}
-			r.Local = append(r.Local, lr)
-			if lr.IsAvailable {
-				r.IF.Available++
-				if lr.IsAnomaly != nil && *lr.IsAnomaly {
-					r.IF.Anomalous++
-				}
-			}
-		}
-		timing.IFSeconds += time.Since(started).Seconds()
-		if r.IF.Available > 0 {
-			r.IF.S = ptr(float64(r.IF.Anomalous) / float64(r.IF.Available))
+		r, err := EvaluateGroup(&p.Groups[gi], t, hw, ld, timing)
+		if err != nil {
+			return nil, err
 		}
 		rows[gi] = r
 	}
